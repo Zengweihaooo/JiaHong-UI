@@ -1,0 +1,27 @@
+.jh-text-xs {
+  font-size: var(--jh-font-size-xs);
+}
+
+.jh-text-sm {
+  font-size: var(--jh-font-size-sm);
+}
+
+.jh-text-md {
+  font-size: var(--jh-font-size-md);
+}
+
+.jh-text-lg {
+  font-size: var(--jh-font-size-lg);
+}
+
+.jh-text-xl {
+  font-size: var(--jh-font-size-xl);
+}
+
+.jh-text-muted {
+  color: var(--jh-color-text-muted);
+}
+
+.jh-text-secondary {
+  color: var(--jh-color-text-secondary);
+}
