@@ -5,6 +5,7 @@
     :aria-label="ariaLabel || title"
     @click="$emit('click', $event)"
   >
+    <img class="consult-card__bg" :src="backgroundSrc" alt="" aria-hidden="true" />
     <div class="consult-card__content">
       <div class="consult-card__icon">
         <img class="consult-card__icon-img" :src="iconSrc" alt="" aria-hidden="true" />
@@ -36,6 +37,10 @@ const props = defineProps({
     type: String,
     default: 'assets/figma-home/consult-icon.svg'
   },
+  backgroundImage: {
+    type: String,
+    default: 'assets/figma-home/consult-bg.png'
+  },
   hasQueue: {
     type: Boolean,
     default: false
@@ -49,6 +54,7 @@ const props = defineProps({
 defineEmits(['click'])
 
 const iconSrc = computed(() => assetUrl(props.icon))
+const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
 </script>
 
 <style>
@@ -130,6 +136,35 @@ const iconSrc = computed(() => assetUrl(props.icon))
 .consult-card:active,
 .consult-card.is-selected {
   transform: translateY(-1px) scale(0.997);
+}
+
+.consult-card__bg {
+  position: absolute;
+  top: -5px;
+  left: -9px;
+  z-index: 0;
+  width: calc(100% + 18px);
+  max-width: none;
+  height: calc(100% + 10px);
+  object-fit: cover;
+  opacity: 1;
+  pointer-events: none;
+  transition:
+    opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+    filter 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.18s ease;
+}
+
+.consult-card--has-queue .consult-card__bg {
+  opacity: 0.72;
+  filter: sepia(1) saturate(2.35) hue-rotate(350deg) brightness(1.08) contrast(0.94);
+  mix-blend-mode: soft-light;
+}
+
+.consult-card:hover .consult-card__bg,
+.consult-card:focus-visible .consult-card__bg,
+.consult-card.is-selected .consult-card__bg {
+  transform: scale(1.018);
 }
 
 .consult-card__content {

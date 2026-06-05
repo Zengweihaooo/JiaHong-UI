@@ -1,5 +1,5 @@
 <template>
-  <section :class="['card quick-entry-card', { 'is-editing': editing, 'is-schedule-open': scheduleOpen }]" :aria-label="ariaLabel">
+  <section :class="['card quick-entry-card', { 'is-editing': editing }]" :aria-label="ariaLabel">
     <div class="quick-entry-card__header">
       <h2 class="card__title">{{ title }}</h2>
       <button class="quick-entry-card__edit" type="button" :aria-label="editAriaLabel" :aria-pressed="editing" @click="toggleEditing">
@@ -11,22 +11,42 @@
       <div
         v-for="(action, index) in actions"
         :key="`${index}-${action.title || action.desc}`"
-        :class="['quick-card', action.isAdd ? 'quick-card--add' : 'quick-card--custom']"
+        :class="[
+          'quick-card',
+          action.isAdd ? 'quick-card--add' : 'quick-card--custom',
+          {
+            'is-dragging': draggingIndex === index,
+            'is-drag-over': dragOverIndex === index
+          }
+        ]"
         :data-action="action.title || action.desc"
+        :data-quick-title="action.title || undefined"
         :data-quick-feature="featureOf(action)"
+        :data-custom-quick-entry="!action.isAdd ? 'true' : undefined"
         :data-attention="needsAttention(action) ? attentionValue : undefined"
         role="button"
         tabindex="0"
         @click="handleAction(action, index, $event)"
         @keydown.enter.prevent="handleAction(action, index, $event)"
         @keydown.space.prevent="handleAction(action, index, $event)"
+        @dragover.prevent="handleDragOver(index, $event)"
+        @drop.prevent="dropAction(index, $event)"
+        @dragend="endDrag"
       >
         <button v-if="!action.isAdd" class="quick-card__delete" type="button" :aria-label="`${removeLabelPrefix}${action.title}`" @click.stop="removeAction(action, index)">
           <svg class="quick-card__delete-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
             <path d="M4 4L12 12M12 4L4 12" />
           </svg>
         </button>
-        <button v-if="!action.isAdd" class="quick-card__drag" type="button" :aria-label="`${dragLabelPrefix}${action.title}`" draggable="true"></button>
+        <button
+          v-if="!action.isAdd"
+          class="quick-card__drag"
+          type="button"
+          :aria-label="`${dragLabelPrefix}${action.title}`"
+          :draggable="editing"
+          @dragstart.stop="startDrag(index, $event)"
+          @dragend="endDrag"
+        ></button>
         <span v-if="needsAttention(action)" class="quick-card__attention-dot" :aria-label="attentionLabel"></span>
         <span class="quick-card__body">
           <span class="icon-box">
@@ -45,51 +65,52 @@
         </span>
       </div>
     </div>
-    <section class="schedule-panel" :aria-label="scheduleTitle" :hidden="!scheduleOpen">
-      <header class="schedule-panel__header">
-        <span class="schedule-panel__title">
-          <strong>{{ scheduleTitle }}</strong>
-          <span>{{ scheduleUpdatedText }}</span>
-        </span>
-        <span class="schedule-panel__actions">
-          <button class="schedule-panel__detail" type="button" @click="$emit('schedule-detail')">{{ scheduleDetailText }}</button>
-          <button class="schedule-panel__back" type="button" @click="closeSchedulePanel">{{ scheduleBackText }}</button>
-        </span>
-      </header>
-      <nav class="schedule-panel__tabs" :aria-label="scheduleTabsLabel">
-        <button class="schedule-panel__arrow" type="button" aria-label="上一个时间段">‹</button>
-        <button
-          v-for="(slot, index) in scheduleSlots"
-          :key="slot"
-          :class="['schedule-panel__tab', { 'is-active': index === activeScheduleSlotIndex }]"
-          type="button"
-        >
-          {{ slot }}
-        </button>
-        <button class="schedule-panel__arrow" type="button" aria-label="下一个时间段">›</button>
-      </nav>
-      <div class="schedule-board">
-        <div v-for="(row, index) in scheduleRows" :key="row.label" class="schedule-board__date" :style="{ gridRow: String(index + 1) }">
-          <span>{{ row.label }}</span>
-          <span>{{ row.sub }}</span>
-        </div>
-        <article
-          v-for="item in scheduleItems"
-          :key="`${item.row}-${item.col}-${item.title}`"
-          :class="['schedule-event', `schedule-event--${item.tone}`, { 'is-active': item.active }]"
-          :style="{ gridRow: String(item.row), gridColumn: `${item.col} / span ${item.span}` }"
-        >
-          <strong>{{ item.title }}</strong>
-          <span>{{ item.time }}</span>
-          <em v-if="item.active" aria-hidden="true">{{ activeScheduleText }}</em>
-        </article>
+    <Teleport to="body">
+      <div :class="['schedule-overlay', { 'is-open': scheduleOpen }]" :aria-hidden="String(!scheduleOpen)" @click.self="closeSchedulePanel">
+        <section v-if="scheduleOpen" class="schedule-dialog" role="dialog" aria-modal="true" aria-labelledby="schedule-dialog-title">
+          <section class="schedule-panel" aria-label="今日排班">
+            <header class="schedule-panel__header">
+              <strong id="schedule-dialog-title" class="schedule-panel__title">{{ scheduleTitle }}</strong>
+              <button class="schedule-panel__back schedule-panel__close" type="button" aria-label="关闭排班弹窗" @click="closeSchedulePanel">×</button>
+            </header>
+            <div class="schedule-panel__summary">
+              <div class="schedule-panel__summary-left">
+                <div class="schedule-panel__date" aria-label="当前排班日期">
+                  <strong>{{ scheduleDate }}</strong>
+                  <span>{{ scheduleWeekday }}</span>
+                </div>
+                <span class="schedule-panel__punch-counts" aria-label="排班打卡统计">
+                  <span>已打卡：<strong>{{ punchedCount }}</strong></span>
+                  <span>待打卡：<strong>{{ unpunchedCount }}</strong></span>
+                </span>
+              </div>
+              <span class="schedule-panel__actions">
+                <button class="schedule-panel__detail" type="button" @click="$emit('schedule-detail')">{{ scheduleDetailText }}</button>
+                <button
+                  :class="['schedule-panel__punch', punchDone ? 'schedule-panel__punch--done' : 'schedule-panel__punch--warning']"
+                  type="button"
+                  :data-punch-state="punchDone ? 'done' : 'warning'"
+                  @click="punchSchedule"
+                >
+                  {{ punchDone ? punchedText : schedulePunchText }}
+                </button>
+              </span>
+            </div>
+            <div class="schedule-panel__body">
+              <div class="schedule-day-grid">
+                <ScheduleColumn period="morning" title="上午  00:00–12:00" :hours="morningHours" :blocks="morningScheduleBlocks" :punched="punchDone" />
+                <ScheduleColumn period="afternoon" title="下午  12:00–24:00" :hours="afternoonHours" :blocks="afternoonScheduleBlocks" :punched="punchDone" />
+              </div>
+            </div>
+          </section>
+        </section>
       </div>
-    </section>
+    </Teleport>
   </section>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, h, ref, watch } from 'vue'
 import { assetUrl } from '../../utils/assetUrl.js'
 
 defineOptions({
@@ -151,63 +172,77 @@ const props = defineProps({
   },
   scheduleTitle: {
     type: String,
-    default: '近期排班'
-  },
-  scheduleUpdatedText: {
-    type: String,
-    default: '11分钟前已变更'
+    default: '今日排班'
   },
   scheduleDetailText: {
     type: String,
     default: '查看详情'
   },
-  scheduleBackText: {
+  schedulePunchText: {
     type: String,
-    default: '返回入口'
+    default: '立即打卡'
   },
-  scheduleTabsLabel: {
+  punchedText: {
     type: String,
-    default: '排班时间段'
+    default: '已打卡'
   },
-  scheduleSlots: {
-    type: Array,
-    default: () => ['10:00–11:00', '11:00–12:00', '12:00–13:00', '14:00–15:00', '15:00–16:00', '16:00–17:00']
+  scheduleDate: {
+    type: String,
+    default: '6月3日'
   },
-  activeScheduleSlotIndex: {
+  scheduleWeekday: {
+    type: String,
+    default: '星期三'
+  },
+  initialPunchedCount: {
     type: Number,
     default: 1
   },
-  scheduleRows: {
+  initialUnpunchedCount: {
+    type: Number,
+    default: 3
+  },
+  initialPunchDone: {
+    type: Boolean,
+    default: false
+  },
+  morningHours: {
+    type: Array,
+    default: () => Array.from({ length: 12 }, (_, index) => index)
+  },
+  afternoonHours: {
+    type: Array,
+    default: () => Array.from({ length: 12 }, (_, index) => index + 12)
+  },
+  scheduleBlocks: {
     type: Array,
     default: () => [
-      { label: '5-04', sub: '今日' },
-      { label: '5-05', sub: '周一' },
-      { label: '5-06', sub: '周二' }
+      { column: 'morning', tone: 'ended', title: '饿了么后方-固定值班', time: '已结束', topHour: 4, durationHours: 2, status: 'check' },
+      { column: 'morning', tone: 'active', title: '饿了么后方-固定值班', time: '8:00-11:00', topHour: 8, durationHours: 3, status: 'warning', active: true },
+      { column: 'afternoon', tone: 'orange', title: '九州通美团-兜底科室报班', time: '14:00-15:00', topHour: 14, durationHours: 2 },
+      { column: 'afternoon', tone: 'purple', title: '妙手阿里-兜底科室报班', time: '14:00-15:00', topHour: 18, durationHours: 4 }
     ]
-  },
-  scheduleItems: {
-    type: Array,
-    default: () => [
-      { row: 1, col: 2, span: 3, tone: 'blue', title: '线下药店续方服务', time: '10:00-13:00', active: true },
-      { row: 1, col: 6, span: 1, tone: 'cyan', title: '妙手阿里-兜底科室报班', time: '07:00-08:00' },
-      { row: 2, col: 2, span: 3, tone: 'blue', title: '线下药店续方服务', time: '10:00-13:00' },
-      { row: 2, col: 5, span: 1, tone: 'amber', title: '九州通美团-兜底科室报班', time: '14:00-15:00' },
-      { row: 2, col: 6, span: 1, tone: 'cyan', title: '妙手阿里-兜底科室报班', time: '07:00-08:00' },
-      { row: 3, col: 2, span: 1, tone: 'red', title: '拼多多-自由报班', time: '10:00-11:00' },
-      { row: 3, col: 4, span: 1, tone: 'cyan', title: '九州通阿里-固定值班', time: '12:00-13:00' },
-      { row: 3, col: 5, span: 2, tone: 'amber', title: '九州通美团-自由报班', time: '14:00-16:00' }
-    ]
-  },
-  activeScheduleText: {
-    type: String,
-    default: '进行中'
   }
 })
 
-const emit = defineEmits(['add', 'edit', 'remove', 'select', 'schedule-open', 'schedule-detail'])
+const emit = defineEmits(['add', 'edit', 'remove', 'select', 'reorder', 'schedule-open', 'schedule-detail', 'schedule-punch'])
 
 const editing = ref(false)
 const scheduleOpen = ref(false)
+const punchDone = ref(props.initialPunchDone)
+const draggingIndex = ref(-1)
+const dragOverIndex = ref(-1)
+const punchedCount = computed(() => props.initialPunchedCount + (punchDone.value ? 1 : 0))
+const unpunchedCount = computed(() => Math.max(0, props.initialUnpunchedCount - (punchDone.value ? 1 : 0)))
+const morningScheduleBlocks = computed(() => props.scheduleBlocks.filter((block) => block.column === 'morning'))
+const afternoonScheduleBlocks = computed(() => props.scheduleBlocks.filter((block) => block.column === 'afternoon'))
+
+watch(
+  () => props.initialPunchDone,
+  (value) => {
+    punchDone.value = value
+  }
+)
 
 const defaultIconMap = {
   document: 'assets/figma-home/quick-doc.svg',
@@ -228,7 +263,7 @@ function featureOf(action) {
 }
 
 function needsAttention(action) {
-  return !action.isAdd && featureOf(action) === props.attentionFeature
+  return !punchDone.value && !action.isAdd && featureOf(action) === props.attentionFeature
 }
 
 function toggleEditing() {
@@ -245,6 +280,62 @@ function closeSchedulePanel(event) {
   event?.preventDefault()
   event?.stopPropagation()
   scheduleOpen.value = false
+}
+
+function punchSchedule() {
+  if (punchDone.value) return
+  punchDone.value = true
+  emit('schedule-punch')
+}
+
+function isMovableIndex(index) {
+  return editing.value && index >= 0 && !props.actions[index]?.isAdd
+}
+
+function startDrag(index, event) {
+  if (!isMovableIndex(index)) {
+    event?.preventDefault()
+    return
+  }
+  draggingIndex.value = index
+  dragOverIndex.value = index
+  event?.dataTransfer?.setData('text/plain', String(index))
+  if (event?.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'move'
+  }
+}
+
+function handleDragOver(index, event) {
+  if (!isMovableIndex(index) || draggingIndex.value < 0 || draggingIndex.value === index) return
+  dragOverIndex.value = index
+  if (event?.dataTransfer) {
+    event.dataTransfer.dropEffect = 'move'
+  }
+}
+
+function dropAction(index, event) {
+  const fallbackIndex = Number(event?.dataTransfer?.getData('text/plain'))
+  const fromIndex = draggingIndex.value >= 0 ? draggingIndex.value : fallbackIndex
+  if (!isMovableIndex(fromIndex) || !isMovableIndex(index) || fromIndex === index) {
+    endDrag()
+    return
+  }
+  const actions = props.actions.slice()
+  const [action] = actions.splice(fromIndex, 1)
+  actions.splice(index, 0, action)
+  emit('reorder', {
+    fromIndex,
+    toIndex: index,
+    action,
+    target: props.actions[index],
+    actions
+  })
+  endDrag()
+}
+
+function endDrag() {
+  draggingIndex.value = -1
+  dragOverIndex.value = -1
 }
 
 function handleAction(action, index, event) {
@@ -269,6 +360,42 @@ function removeAction(action, index) {
   if (!editing.value) return
   emit('remove', { action, index })
 }
+
+function ScheduleColumn({ period, title, hours, blocks, punched }) {
+  return h('section', { class: ['schedule-day-grid__column', `schedule-day-grid__column--${period}`], 'aria-label': title }, [
+    h('header', { class: 'schedule-day-grid__period' }, title),
+    h('div', { class: 'schedule-day-grid__body' }, [
+      h('div', { class: 'schedule-day-grid__hours', 'aria-hidden': 'true' }, hours.map((hour) => h('span', { class: 'schedule-day-grid__hour' }, `${hour}:00`))),
+      h('div', { class: 'schedule-day-grid__tracks' }, [
+        ...hours.map((hour) => h('span', { class: 'schedule-day-grid__line', 'aria-hidden': 'true', style: { '--row': hour % 12 } })),
+        ...blocks.map((block) => h(ScheduleBlock, { block, punched })),
+        period === 'morning' && !punched ? h('div', { class: 'schedule-day-grid__missed-callout' }, '该时段未打卡') : null,
+        period === 'morning' ? h('div', { class: 'schedule-day-grid__current-line', 'aria-hidden': 'true' }) : null
+      ])
+    ])
+  ])
+}
+
+function ScheduleBlock({ block, punched }) {
+  const relativeHour = Number(block.topHour || 0) % 12
+  const status = block.status === 'check' || (block.status === 'warning' && punched)
+    ? h('span', { class: 'schedule-day-block__status schedule-day-block__status--check', 'aria-label': '已打卡' }, '✓')
+    : block.status === 'warning'
+      ? h('span', { class: 'schedule-day-block__status schedule-day-block__status--warning', 'aria-label': '该时段未打卡' }, '!')
+      : null
+  return h(
+    'article',
+    {
+      class: ['schedule-day-block', `schedule-day-block--${block.tone}`, { 'is-active': block.active }],
+      style: { '--start-hour': relativeHour, '--duration-hours': block.durationHours || 1 }
+    },
+    [
+      h('div', { class: 'schedule-day-block__title' }, [h('strong', block.title), status]),
+      h('span', { class: 'schedule-day-block__time' }, block.time),
+      block.active ? h('em', { class: 'schedule-day-block__stamp', 'aria-hidden': 'true' }, '进行中') : null
+    ]
+  )
+}
 </script>
 
 <style>
@@ -280,16 +407,6 @@ function removeAction(action, index) {
   height: 476px;
   padding: 24px 32px;
   box-shadow: var(--jh-shadow-soft);
-}
-
-.quick-entry-card.is-schedule-open {
-  gap: 18px;
-  padding: 24px 32px;
-}
-
-.quick-entry-card.is-schedule-open .quick-entry-card__header,
-.quick-entry-card.is-schedule-open .quick-grid {
-  display: none;
 }
 
 .quick-entry-card__header {
@@ -530,6 +647,11 @@ function removeAction(action, index) {
     transform 140ms ease;
 }
 
+.quick-card.is-drag-over {
+  border-color: var(--jh-blue);
+  background: #f2f7ff;
+}
+
 .quick-card.is-removing {
   opacity: 0;
   pointer-events: none;
@@ -655,17 +777,44 @@ img.quick-icon {
   overflow: visible;
 }
 
-.schedule-panel[hidden] {
+.schedule-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
   display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background: rgba(31, 42, 55, 0.28);
+}
+
+.schedule-overlay.is-open {
+  display: flex;
+}
+
+.schedule-dialog {
+  width: min(1040px, calc(100vw - 64px));
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow:
+    0 84px 64px -20px rgba(16, 42, 67, 0.18),
+    0 8px 16px -4px rgba(16, 42, 67, 0.1);
+}
+
+.schedule-dialog .schedule-panel {
+  width: 100%;
+  max-height: calc(100vh - 64px);
+  min-height: 560px;
 }
 
 .schedule-panel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0;
   width: 100%;
   min-width: 0;
-  height: 100%;
   color: var(--jh-text-primary);
 }
 
@@ -673,29 +822,75 @@ img.quick-icon {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  min-height: 30px;
+  min-height: 56px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e8eb;
 }
 
 .schedule-panel__title {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
-  min-width: 0;
-}
-
-.schedule-panel__title strong {
   font-size: 18px;
   font-weight: 700;
   line-height: 28px;
   white-space: nowrap;
 }
 
-.schedule-panel__title span {
-  color: #b5c0cc;
+.schedule-panel__close {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f3f4;
+  color: #7d8a99;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.schedule-panel__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 24px;
+  border-bottom: 1px solid #e5e8eb;
+  background: #fbfcfd;
+}
+
+.schedule-panel__summary-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-width: 0;
+}
+
+.schedule-panel__date {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--jh-text-primary);
+}
+
+.schedule-panel__date strong,
+.schedule-panel__date span {
+  font-size: 16px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+
+.schedule-panel__punch-counts {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--jh-text-secondary);
   font-size: 14px;
   line-height: 22px;
   white-space: nowrap;
+}
+
+.schedule-panel__punch-counts strong {
+  color: var(--jh-blue);
 }
 
 .schedule-panel__actions {
@@ -706,122 +901,148 @@ img.quick-icon {
 }
 
 .schedule-panel__detail,
-.schedule-panel__back {
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #7d8a99;
-  cursor: pointer;
-  font-size: 14px;
-  line-height: 22px;
-}
-
-.schedule-panel__back {
-  color: var(--jh-blue);
-}
-
-.schedule-panel__detail:hover,
-.schedule-panel__back:hover,
-.schedule-panel__detail:focus-visible,
-.schedule-panel__back:focus-visible {
-  color: var(--jh-blue);
-  outline: none;
-}
-
-.schedule-panel__tabs {
-  display: grid;
-  align-items: center;
-  grid-template-columns: 28px repeat(6, minmax(0, 1fr)) 28px;
-  height: 56px;
-  padding: 0 12px;
-  border-radius: 6px;
-  background: #f8fbff;
-}
-
-.schedule-panel__arrow,
-.schedule-panel__tab {
+.schedule-panel__punch {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 0;
-  height: 40px;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #7d8a99;
+  height: 32px;
+  min-width: 88px;
+  padding: 5px 16px;
+  border: 1px solid #d8dde1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--jh-text-secondary);
   cursor: pointer;
   font-size: 14px;
   line-height: 22px;
-  white-space: nowrap;
 }
 
-.schedule-panel__arrow {
-  font-size: 30px;
-  line-height: 30px;
-}
-
-.schedule-panel__tab.is-active {
-  position: relative;
+.schedule-panel__detail {
+  border-color: transparent;
+  background: transparent;
   color: var(--jh-blue);
-  font-weight: 700;
 }
 
-.schedule-panel__tab.is-active::after {
-  position: absolute;
-  right: 10px;
-  bottom: 2px;
-  left: 10px;
-  height: 2px;
+.schedule-panel__punch--primary,
+.schedule-panel__punch--warning {
+  border-color: var(--jh-blue);
   background: var(--jh-blue);
-  content: "";
+  color: #ffffff;
 }
 
-.schedule-board {
+.schedule-panel__punch--done {
+  border-color: #00b578;
+  background: #00b578;
+  color: #ffffff;
+}
+
+.schedule-panel__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+  background: #ffffff;
+}
+
+.schedule-day-grid {
   display: grid;
-  grid-template-columns: 56px repeat(5, minmax(96px, 1fr));
-  grid-template-rows: repeat(3, 1fr);
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+  min-width: 760px;
+  height: 640px;
+}
+
+.schedule-day-grid__column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid #e5e8eb;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.schedule-day-grid__period {
+  height: 40px;
+  padding: 9px 16px;
+  border-bottom: 1px solid #e5e8eb;
+  background: #f8fbff;
+  color: var(--jh-text-primary);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.schedule-day-grid__body {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
   flex: 1;
   min-height: 0;
 }
 
-.schedule-board__date {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 2px;
-  color: #7d8a99;
-  font-size: 15px;
-  line-height: 22px;
+.schedule-day-grid__hours {
+  display: grid;
+  grid-template-rows: repeat(12, minmax(0, 1fr));
+  border-right: 1px solid #eef1f4;
+  background: #fbfcfd;
 }
 
-.schedule-event {
-  position: relative;
+.schedule-day-grid__hour {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4px;
+  color: #7d8a99;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.schedule-day-grid__tracks {
+  position: relative;
   min-width: 0;
   min-height: 0;
-  padding: 12px 12px 12px 14px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: #f5f9ff;
-  color: var(--jh-text-primary);
-  font-size: 14px;
-  line-height: 22px;
 }
 
-.schedule-event::before {
+.schedule-day-grid__line {
   position: absolute;
-  top: 0;
-  bottom: 0;
   left: 0;
-  width: 3px;
+  right: 0;
+  top: calc(var(--row) * 100% / 12);
+  border-top: 1px solid #f0f2f5;
+}
+
+.schedule-day-block {
+  position: absolute;
+  top: calc(var(--start-hour) * 100% / 12 + 6px);
+  left: 12px;
+  right: 12px;
+  height: calc(var(--duration-hours) * 100% / 12 - 12px);
+  min-height: 58px;
+  padding: 10px 12px 10px 14px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #f5f9ff;
+  color: var(--jh-text-primary);
+  box-shadow: 0 6px 16px -12px rgba(16, 42, 67, 0.16);
+}
+
+.schedule-day-block::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
   background: var(--jh-blue);
   content: "";
 }
 
-.schedule-event strong {
+.schedule-day-block__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.schedule-day-block__title strong {
+  min-width: 0;
   overflow: hidden;
   color: inherit;
   font-size: 14px;
@@ -831,51 +1052,167 @@ img.quick-icon {
   white-space: nowrap;
 }
 
-.schedule-event span {
-  overflow: hidden;
+.schedule-day-block__time {
+  display: block;
+  margin-top: 4px;
   color: #4c5f73;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 12px;
+  line-height: 20px;
 }
 
-.schedule-event em {
+.schedule-day-block__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+
+.schedule-day-block__status--check,
+.schedule-day-block__status--done {
+  background: #00b578;
+}
+
+.schedule-day-block__status--warning {
+  background: #f59e0b;
+}
+
+.schedule-day-block--ended {
+  background: #f6f7f8;
+}
+
+.schedule-day-block--ended::before {
+  background: #9aa4b2;
+}
+
+.schedule-day-block--ended .schedule-day-block__title strong,
+.schedule-day-block--ended .schedule-day-block__time {
+  color: #9aa4b2;
+}
+
+.schedule-day-block--active {
+  background: #eef5ff;
+  color: #2768ff;
+}
+
+.schedule-day-block--active::before {
+  background: #2768ff;
+}
+
+.schedule-day-block--active .schedule-day-block__time {
+  color: #2768ff;
+}
+
+.schedule-day-block--orange {
+  background: #fff7ed;
+}
+
+.schedule-day-block--orange::before {
+  background: #f59e0b;
+}
+
+.schedule-day-block--orange .schedule-day-block__time {
+  color: #9a4d00;
+}
+
+.schedule-day-block--purple {
+  background: #f5f1ff;
+}
+
+.schedule-day-block--purple::before {
+  background: #7c5cff;
+}
+
+.schedule-day-block--purple .schedule-day-block__time {
+  color: #5b3fd6;
+}
+
+.schedule-day-block__stamp {
   position: absolute;
-  right: 14px;
-  bottom: 12px;
-  color: rgba(125, 138, 153, 0.28);
-  font-size: 28px;
+  right: 12px;
+  bottom: 8px;
+  color: rgba(39, 104, 255, 0.18);
+  font-size: 26px;
   font-style: normal;
   font-weight: 700;
   line-height: 1;
   transform: rotate(-22deg);
 }
 
-.schedule-event--blue {
-  background: #eef5ff;
-  color: #2768ff;
+.schedule-day-grid__missed-callout {
+  position: absolute;
+  top: calc(8 * 100% / 12 + 8px);
+  right: 22px;
+  z-index: 2;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: #fff7ed;
+  color: #9a4d00;
+  font-size: 12px;
+  line-height: 18px;
+  box-shadow: 0 8px 20px -12px rgba(154, 77, 0, 0.36);
 }
 
-.schedule-event--cyan {
-  background: #f1fbff;
+.schedule-day-grid__missed-callout::after {
+  position: absolute;
+  left: 12px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: inherit;
+  content: "";
+  transform: rotate(45deg);
 }
 
-.schedule-event--cyan::before {
-  background: #1d9bf0;
+.schedule-day-grid__current-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(8.5 * 100% / 12);
+  z-index: 1;
+  border-top: 1px dashed #f59e0b;
 }
 
-.schedule-event--amber {
-  background: #fffaf0;
-}
-
-.schedule-event--amber::before {
+.schedule-day-grid__current-line::before {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   background: #f59e0b;
+  content: "";
 }
 
-.schedule-event--red {
-  background: #fff7f7;
-}
+@media (max-width: 760px) {
+  .schedule-overlay {
+    padding: 16px;
+  }
 
-.schedule-event--red::before {
-  background: #d92d20;
+  .schedule-dialog {
+    width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+  }
+
+  .schedule-panel__summary {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .schedule-panel__summary-left {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .schedule-panel__body {
+    padding: 16px;
+  }
 }
 </style>
