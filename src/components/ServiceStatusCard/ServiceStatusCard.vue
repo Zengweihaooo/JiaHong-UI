@@ -124,13 +124,13 @@ const checkmarkSrc = computed(() => assetUrl(props.checkmarkIcon))
 
 .service-tile {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
   width: 100%;
   height: 84px;
-  padding: 10px 24px;
+  min-width: 0;
+  padding: 10px 12px;
   border: 0;
   border-radius: 6px;
   background-color: var(--jh-panel);
@@ -142,6 +142,22 @@ const checkmarkSrc = computed(() => assetUrl(props.checkmarkIcon))
   transition:
     background-color 160ms ease,
     box-shadow 160ms ease;
+}
+
+.service-tile .jh-checkbox {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.service-tile .jh-checkbox__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: keep-all;
 }
 
 .service-tile:hover {
