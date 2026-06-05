@@ -186,8 +186,55 @@
 .jh-input-field:focus-visible,
 .jh-search-field:focus-within,
 .message-item:focus-visible {
-  outline: 2px solid rgba(0, 110, 249, 0.35);
+  outline: var(--jh-focus-outline);
   outline-offset: 2px;
+}
+
+.jh-page {
+  min-height: 100vh;
+  background: var(--jh-bg);
+  color: var(--jh-text-primary);
+  font-family: var(--jh-font);
+}
+
+.jh-surface,
+.jh-panel,
+.jh-dialog-surface {
+  background: var(--jh-card);
+  color: var(--jh-text-primary);
+}
+
+.jh-surface {
+  border: 1px solid var(--jh-line);
+  border-radius: var(--jh-radius-lg);
+  box-shadow: var(--jh-shadow);
+}
+
+.jh-panel {
+  border-radius: var(--jh-radius-md);
+  background: var(--jh-panel);
+}
+
+.jh-dialog-surface {
+  overflow: hidden;
+  border-radius: var(--jh-radius-lg);
+  box-shadow: var(--jh-shadow-popover);
+}
+
+.jh-row,
+.jh-stack {
+  display: flex;
+  min-width: 0;
+}
+
+.jh-row {
+  align-items: center;
+  gap: var(--jh-space-3);
+}
+
+.jh-stack {
+  flex-direction: column;
+  gap: var(--jh-space-3);
 }
 
 .jh-switch {

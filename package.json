@@ -12,11 +12,13 @@
       "require": "./dist/jiahong-ui.cjs"
     },
     "./styles.css": "./dist/styles.css",
+    "./fonts.css": "./styles/fonts.css",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
+    "styles/fonts.css",
     "assets",
     "README.md"
   ],

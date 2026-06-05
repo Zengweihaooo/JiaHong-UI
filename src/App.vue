@@ -42,12 +42,36 @@
           <h2>Foundations</h2>
           <p>Design tokens are exported through <code>@jiahong/ui/styles.css</code>.</p>
         </div>
-        <div class="token-grid">
-          <article v-for="token in tokens" :key="token.name" class="token-card">
-            <span class="token-card__swatch" :style="{ background: token.value }"></span>
-            <div>
-              <strong>{{ token.name }}</strong>
-              <code>{{ token.value }}</code>
+        <div class="token-groups">
+          <article v-for="group in filteredTokenGroups" :key="group.title" class="token-group">
+            <header class="token-group__head">
+              <div>
+                <h3>{{ group.title }}</h3>
+                <p>{{ group.description }}</p>
+              </div>
+              <span>{{ group.tokens.length }} tokens</span>
+            </header>
+            <div class="token-grid">
+              <button
+                v-for="token in group.tokens"
+                :key="token.name"
+                class="token-card"
+                type="button"
+                :aria-label="`复制 ${token.name}`"
+                @click="copyToken(token)"
+              >
+                <span class="token-card__swatch" :style="{ background: token.value }"></span>
+                <span class="token-card__body">
+                  <strong>{{ token.name }}</strong>
+                  <code>{{ token.value }}</code>
+                  <small>{{ copiedToken === token.name ? '已复制 token 名称' : token.detail }}</small>
+                </span>
+                <span class="token-card__detail" role="tooltip">
+                  <strong>Design usage</strong>
+                  <span>{{ token.detail }}</span>
+                  <code>{{ token.css }}</code>
+                </span>
+              </button>
             </div>
           </article>
         </div>
@@ -119,6 +143,41 @@
               </span>
             </div>
           </div>
+
+          <div class="primitive-panel primitive-panel--wide">
+            <h3>Surfaces</h3>
+            <div class="primitive-row primitive-row--surfaces">
+              <div class="jh-surface primitive-surface-demo">
+                <strong>.jh-surface</strong>
+                <small>通用白底卡片、弹窗内容块。</small>
+              </div>
+              <div class="jh-panel primitive-surface-demo">
+                <strong>.jh-panel</strong>
+                <small>二级信息区、输入辅助背景。</small>
+              </div>
+              <div class="jh-dialog-surface primitive-surface-demo">
+                <strong>.jh-dialog-surface</strong>
+                <small>浮层、菜单、确认弹窗。</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="migration" class="docs-section">
+        <div class="docs-section__head">
+          <h2>Migration Map</h2>
+          <p>医生端抽离边界：共享 UI 上移，业务工作台布局保留在业务仓库。</p>
+        </div>
+        <div class="migration-board">
+          <article v-for="item in migrationItems" :key="item.title" class="migration-card">
+            <header>
+              <strong>{{ item.title }}</strong>
+              <StatusBadge :tone="item.tone" :label="item.state" :dot="false" />
+            </header>
+            <p>{{ item.description }}</p>
+            <code>{{ item.path }}</code>
+          </article>
         </div>
       </section>
 
@@ -155,23 +214,73 @@ import {
 } from './index.js'
 
 const query = ref('')
+const copiedToken = ref('')
 
 const navItems = [
-  { id: 'foundations', name: 'Foundations', count: 'Tokens' },
+  { id: 'foundations', name: 'Foundations', count: '58' },
   { id: 'components', name: 'Components', count: '9' },
-  { id: 'styles', name: 'CSS Primitives', count: '12' },
+  { id: 'styles', name: 'CSS Primitives', count: '18' },
+  { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '44' }
 ]
 
-const tokens = [
-  { name: '--jh-color-primary', value: '#1677ff' },
-  { name: '--jh-color-success', value: '#2ba471' },
-  { name: '--jh-color-warning', value: '#e37318' },
-  { name: '--jh-color-danger', value: '#cb2c2c' },
-  { name: '--jh-color-bg-page', value: '#f4f5f6' },
-  { name: '--jh-color-bg-surface', value: '#ffffff' },
-  { name: '--jh-color-border', value: '#e5e8eb' },
-  { name: '--jh-shadow-md', value: '0 6px 16px -8px rgba(16, 42, 67, .08)' }
+const tokenGroups = [
+  {
+    title: 'Brand and Semantic Color',
+    description: '品牌、状态和风险色。业务端只传状态，不在页面内硬编码色值。',
+    tokens: [
+      token('--jh-color-primary', '#1677ff', '品牌主色，用于新组件和 docs。'),
+      token('--jh-blue', '#006ef9', '医生端迁移兼容主蓝，用于旧页面视觉还原。'),
+      token('--jh-blue-light', '#3b92ff', '主按钮渐变高光和 hover 边框。'),
+      token('--jh-color-success', '#20b26b', '通用成功语义。'),
+      token('--jh-green', '#2ba471', '在线/通过状态兼容色。'),
+      token('--jh-color-warning', '#f59e0b', '等待、超时预警、通用警告。'),
+      token('--jh-orange', '#f97316', '未读、提醒、补充提示。'),
+      token('--jh-color-danger', '#e5484d', '危险操作、删除确认、错误状态。')
+    ]
+  },
+  {
+    title: 'Surface and Text',
+    description: '页面背景、卡片、分割线和文字层级。',
+    tokens: [
+      token('--jh-bg', '#f4f5f6', '应用页面底色。'),
+      token('--jh-card', '#ffffff', '卡片、弹窗、白底容器。'),
+      token('--jh-panel', '#f8f8f9', '输入、二级面板、弱容器。'),
+      token('--jh-line', '#eceef0', '浅分割线。'),
+      token('--jh-line-strong', '#d8dde1', '表格、缩略图、强调边框。'),
+      token('--jh-text-primary', 'rgba(0, 0, 0, 0.9)', '标题和主内容。'),
+      token('--jh-text-secondary', 'rgba(0, 0, 0, 0.6)', '说明、次级操作。'),
+      token('--jh-text-tertiary', 'rgba(0, 0, 0, 0.4)', '占位符、弱提示。')
+    ]
+  },
+  {
+    title: 'Radius, Space and Elevation',
+    description: '圆角、间距、阴影和交互动效基准。',
+    tokens: [
+      token('--jh-radius-sm', '4px', '标签、小型控件圆角。'),
+      token('--jh-radius-md', '6px', '按钮、输入、面板圆角。'),
+      token('--jh-radius-lg', '8px', '卡片、凭证、弹窗圆角。'),
+      token('--jh-radius-pill', '999px', '头像、状态点、胶囊控件。'),
+      token('--jh-space-2', '8px', '小型元素间距。'),
+      token('--jh-space-4', '16px', '常规内容间距。'),
+      token('--jh-shadow', '0 6px 16px -8px rgba(16, 42, 67, .08)', '医生端卡片阴影兼容。'),
+      token('--jh-shadow-popover', '0 24px 56px -24px rgba(16, 42, 67, .28)', '菜单、浮层、弹窗。')
+    ]
+  },
+  {
+    title: 'Controls and Data Display',
+    description: '按钮、表格、输入、标签、消息气泡等可复用控件 token。',
+    tokens: [
+      token('--jh-btn-primary', 'linear-gradient(270deg, #3b92ff, #006ef9)', '主按钮背景。'),
+      token('--jh-btn-outline-secondary-border', '#d8dde1', '次级按钮边框。'),
+      token('--jh-switch-width', '60px', '开关宽度。'),
+      token('--jh-checkbox-size', '24px', '复选框点击目标。'),
+      token('--jh-search-field-width', '680px', '搜索框默认宽度。'),
+      token('--jh-table-width', '680px', '表格和搜索区默认宽度。'),
+      token('--jh-chat-bubble-max-width', '72%', '聊天气泡最大宽度。'),
+      token('--jh-tag-bg', '#eceef0', '可删除标签背景。')
+    ]
+  }
 ]
 
 const voucherImages = [
@@ -282,10 +391,54 @@ const assets = [
   { name: 'Consult', path: 'assets/figma-room/consult.svg' }
 ]
 
+const migrationItems = [
+  {
+    title: '基础组件',
+    state: '已上移',
+    tone: 'success',
+    description: 'StatusBadge、ReadTag、DurationChip、TypeIcon、Avatar、Button、Card、EmptyState、FollowUpVoucher 从统一入口导出。',
+    path: 'import { StatusBadge } from "@jiahong/ui"'
+  },
+  {
+    title: 'Design Tokens',
+    state: '深化中',
+    tone: 'info',
+    description: '颜色、字体、圆角、阴影、按钮、输入、表格、标签和聊天气泡 token 已集中到 styles/index.css。',
+    path: 'import "@jiahong/ui/styles.css"'
+  },
+  {
+    title: '共享资产',
+    state: '已上移',
+    tone: 'success',
+    description: 'logo、问诊类型图标、空状态、附件、搜索、视频和字体资产由 assetUrl 统一解析。',
+    path: 'assetUrl("assets/figma-room/video-consult.svg")'
+  },
+  {
+    title: '医生端业务布局',
+    state: '保留',
+    tone: 'warning',
+    description: '问诊工作台、处方编辑、风险检测弹窗等仍包含医生端流程与字段，暂不迁入 UI。',
+    path: 'JiaHong_YiSheng/src/styles/legacy-app.css'
+  }
+]
+
+const tokens = tokenGroups.flatMap((group) => group.tokens)
+
 const filteredComponents = computed(() => {
   const keyword = query.value.trim().toLowerCase()
   if (!keyword) return componentItems
   return componentItems.filter((item) => `${item.name} ${item.description} ${item.api.join(' ')}`.toLowerCase().includes(keyword))
+})
+
+const filteredTokenGroups = computed(() => {
+  const keyword = query.value.trim().toLowerCase()
+  if (!keyword) return tokenGroups
+  return tokenGroups
+    .map((group) => ({
+      ...group,
+      tokens: group.tokens.filter((item) => `${group.title} ${item.name} ${item.value} ${item.detail}`.toLowerCase().includes(keyword))
+    }))
+    .filter((group) => group.tokens.length > 0)
 })
 
 function messageItem(type, title, preview, badge) {
@@ -298,5 +451,26 @@ function messageItem(type, title, preview, badge) {
     ]),
     badge ? h('span', { class: 'message-item__badge' }, badge) : null
   ])
+}
+
+function token(name, value, detail) {
+  return {
+    name,
+    value,
+    detail,
+    css: `${name}: ${value};`
+  }
+}
+
+async function copyToken(tokenItem) {
+  try {
+    await navigator.clipboard.writeText(tokenItem.name)
+    copiedToken.value = tokenItem.name
+    window.setTimeout(() => {
+      if (copiedToken.value === tokenItem.name) copiedToken.value = ''
+    }, 1200)
+  } catch {
+    copiedToken.value = ''
+  }
 }
 </script>

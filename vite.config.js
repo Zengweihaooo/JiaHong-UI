@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   build: {
+    assetsInlineLimit: 0,
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
       name: 'JiaHongUI',
