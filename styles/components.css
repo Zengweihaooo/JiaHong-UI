@@ -799,6 +799,13 @@
   white-space: nowrap;
 }
 
+.medicine-risk-cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
 .medicine-table__row > span:first-child,
 .medicine-table__row > span:nth-child(8),
 .medicine-table__row > input[data-medicine-field="quantity"] {

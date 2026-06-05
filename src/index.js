@@ -26,6 +26,7 @@ export {
   durationTone,
   durationToneThresholds,
   formatDuration,
+  shouldShowMedicineRiskTag,
   statusLabel,
   typeLabel
 } from './utils/index.js'

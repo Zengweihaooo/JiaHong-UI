@@ -6,3 +6,4 @@ export {
   statusLabel,
   typeLabel
 } from './format.js'
+export { shouldShowMedicineRiskTag } from './medicineRisk.js'
