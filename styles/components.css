@@ -439,11 +439,6 @@
   color: var(--jh-risk-tag-text);
 }
 
-.jh-risk-tag--medium {
-  background: #fff1d6;
-  color: #b65f00;
-}
-
 .jh-risk-tag--low {
   background: var(--jh-green-bg);
   color: var(--jh-green);
