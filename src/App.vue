@@ -352,7 +352,7 @@ const componentItems = [
     api: ['src', 'name', 'size'],
     preview: () =>
       h('div', { class: 'preview-row' }, [
-        h(Avatar, { src: assetUrl('assets/figma-home/avatar-source.png'), name: '嘉虹' }),
+        h(Avatar, { name: '嘉虹' }),
         h(Avatar, { name: '陈医生' }),
         h(Avatar, { name: '药师', size: 'lg' })
       ])
