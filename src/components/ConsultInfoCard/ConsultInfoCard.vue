@@ -14,10 +14,14 @@
           <button
             v-for="(image, index) in normalizedImages"
             :key="`${image.title}-${index}`"
-            class="consult-attachment consult-attachment--unread"
+            :class="[
+              'consult-attachment',
+              isImageViewed(image, index) ? 'consult-attachment--read' : 'consult-attachment--unread'
+            ]"
             type="button"
-            :aria-label="`未读病例附件：预览${image.title}`"
-            @click="emit('preview-image', { image, index, images: normalizedImages })"
+            :aria-label="`${isImageViewed(image, index) ? '已读' : '未读'}病例附件：预览${image.title}`"
+            :data-consult-attachment-status="isImageViewed(image, index) ? 'read' : 'unread'"
+            @click="previewImage(image, index)"
           >
             <span class="consult-attachment__thumb">
               <img :src="image.image" :alt="image.title" loading="lazy" />
@@ -29,11 +33,15 @@
           <button
             v-for="(voice, index) in normalizedVoices"
             :key="`${voice.title}-${index}`"
-            class="followup-voucher-voice followup-voucher-item followup-voucher-item--unviewed"
+            :class="[
+              'followup-voucher-voice followup-voucher-item',
+              isVoiceViewed(voice, index) ? 'followup-voucher-item--viewed' : 'followup-voucher-item--unviewed'
+            ]"
             type="button"
             :aria-label="`播放${voice.title}，${voice.duration}秒`"
-            :aria-pressed="String(activeVoice === voice)"
-            @click="activeVoice = voice"
+            :aria-pressed="String(isVoiceActive(voice, index))"
+            :data-followup-voucher-status="isVoiceViewed(voice, index) ? 'viewed' : 'unviewed'"
+            @click="openVoice(voice, index)"
           >
             <span class="followup-voice-time">{{ voice.duration }}"</span>
             <VoiceWaveform />
@@ -49,12 +57,12 @@
       role="dialog"
       aria-modal="true"
       :aria-hidden="!activeVoice"
-      @click.self="activeVoice = null"
+      @click.self="closeVoice"
     >
       <div class="jh-voucher-voice-dialog">
         <div class="jh-voucher-voice-dialog__header">
           <h2>{{ activeVoice?.title || voiceTitle }}</h2>
-          <button class="jh-voucher-voice-dialog__close" type="button" :aria-label="`关闭${voiceTitle}`" @click="activeVoice = null"></button>
+          <button class="jh-voucher-voice-dialog__close" type="button" :aria-label="`关闭${voiceTitle}`" @click="closeVoice"></button>
         </div>
         <div class="jh-voucher-voice-dialog__body">
           <button class="jh-voucher-voice-dialog__play" type="button" :aria-label="`播放${voiceTitle}`"></button>
@@ -109,6 +117,9 @@ const props = defineProps({
 
 const emit = defineEmits(['preview-image'])
 const activeVoice = ref(null)
+const activeVoiceKey = ref('')
+const viewedImageKeys = ref(new Set())
+const viewedVoiceKeys = ref(new Set())
 const dialogVoiceWaveHeights = [12, 18, 10, 20, 14, 8, 8, 6, 4, 10, 14, 14, 12, 10, 10, 8]
 
 const normalizedImages = computed(() =>
@@ -140,6 +151,48 @@ const normalizedVoices = computed(() =>
 )
 
 const hasContent = computed(() => Boolean(props.description) || normalizedImages.value.length > 0 || normalizedVoices.value.length > 0)
+
+function imageKey(image, index) {
+  return `${image.title || '附件'}-${image.image || ''}-${index}`
+}
+
+function voiceKey(voice, index) {
+  return `${voice.title || props.voiceTitle}-${voice.duration || 0}-${index}`
+}
+
+function markViewed(keySet, key) {
+  if (keySet.value.has(key)) return
+  keySet.value = new Set([...keySet.value, key])
+}
+
+function isImageViewed(image, index) {
+  return viewedImageKeys.value.has(imageKey(image, index))
+}
+
+function isVoiceViewed(voice, index) {
+  return viewedVoiceKeys.value.has(voiceKey(voice, index))
+}
+
+function isVoiceActive(voice, index) {
+  return Boolean(activeVoice.value) && activeVoiceKey.value === voiceKey(voice, index)
+}
+
+function previewImage(image, index) {
+  markViewed(viewedImageKeys, imageKey(image, index))
+  emit('preview-image', { image, index, images: normalizedImages.value })
+}
+
+function openVoice(voice, index) {
+  const key = voiceKey(voice, index)
+  markViewed(viewedVoiceKeys, key)
+  activeVoiceKey.value = key
+  activeVoice.value = voice
+}
+
+function closeVoice() {
+  activeVoice.value = null
+  activeVoiceKey.value = ''
+}
 
 function VoiceWaveform() {
   return h(
