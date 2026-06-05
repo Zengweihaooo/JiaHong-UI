@@ -61,90 +61,81 @@ const normalizedItems = computed(() =>
 </script>
 
 <style>
-.card {
-  overflow: hidden;
-  border-radius: var(--jh-radius-lg);
-  background: #ffffff;
-  box-shadow: var(--jh-shadow);
-}
-
-.card--compact {
-  padding: 32px;
-}
-
-.card__title {
-  margin: 0;
-  color: var(--jh-text-primary);
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 28px;
-}
-
 .waiting-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 178px;
-  gap: 28px;
-  min-height: 296px;
-}
-
-.waiting-card__left,
-.waiting-card__right {
   display: flex;
-  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
 }
 
 .waiting-card__left {
-  justify-content: space-between;
-  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 120px;
+  height: 192px;
 }
 
 .waiting-card__heading {
-  display: grid;
-  gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.waiting-card__label,
-.waiting-card__hint {
+.waiting-card__label {
   margin: 0;
-  color: var(--jh-text-muted);
-  font-size: 16px;
-  line-height: 24px;
+  color: var(--jh-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
 }
 
 .waiting-card__number {
   margin: 0;
-  color: rgba(0, 0, 0, 0.9);
-  font-size: 64px;
+  color: var(--jh-text-primary);
+  font-size: 56px;
   font-weight: 700;
-  line-height: 72px;
+  line-height: 64px;
+}
+
+.waiting-card__hint {
+  margin: 0;
+  color: var(--jh-text-tertiary);
+  font-size: 12px;
+  line-height: 20px;
 }
 
 .waiting-card__right {
-  justify-content: center;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 144px;
+  margin-left: auto;
+  padding-top: 24px;
 }
 
 .queue-chip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 59px;
-  padding: 14px 24px;
+  gap: 18px;
+  width: 144px;
+  height: 48px;
+  padding: 10px 28px 10px 20px;
   border-radius: 6px;
-  background: #f8f8f9;
+  background: var(--jh-panel);
 }
 
 .queue-chip__name {
+  width: 56px;
   color: var(--jh-text-secondary);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 22px;
+  white-space: nowrap;
 }
 
 .queue-chip__value {
-  color: rgba(0, 0, 0, 0.9);
-  font-size: 22px;
+  color: var(--jh-text-primary);
+  font-size: 20px;
   font-weight: 700;
-  line-height: 30px;
+  line-height: 28px;
 }
 </style>

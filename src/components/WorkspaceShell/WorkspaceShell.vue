@@ -31,30 +31,24 @@ defineProps({
 
 <style>
 .app-shell {
-  --jh-sidebar-width: 199px;
-  --jh-topbar-height: 56px;
-  --jh-main-gap: 28px;
-  --jh-content-max: 1804px;
-  --jh-consult-card-width: 1152px;
-  --jh-consult-top-gap: 28px;
-  position: relative;
+  --sidebar-width: 160px;
+  --sidebar-collapsed-width: 72px;
   display: grid;
-  grid-template-columns: var(--jh-sidebar-width) minmax(0, 1fr);
-  grid-template-rows: var(--jh-topbar-height) minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  grid-template-rows: 56px minmax(0, 1fr);
   width: 100%;
-  min-width: 1200px;
   min-height: 100vh;
-  overflow: hidden;
-  background: #f2f3f4;
+  background: var(--jh-bg);
   color: var(--jh-text-primary);
+  transition: grid-template-columns 180ms ease;
 }
 
 .app-shell.is-sidebar-collapsed {
-  --jh-sidebar-width: 0px;
+  --sidebar-width: var(--sidebar-collapsed-width);
 }
 
 .app-shell.is-sidebar-expanded {
-  --jh-sidebar-width: 199px;
+  --sidebar-width: 160px;
 }
 
 .app-shell--responsive {

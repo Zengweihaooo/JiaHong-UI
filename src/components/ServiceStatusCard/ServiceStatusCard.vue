@@ -88,70 +88,68 @@ const checkmarkSrc = computed(() => assetUrl(props.checkmarkIcon))
 .service-card {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  min-height: 296px;
+  gap: 12px;
+  padding: 24px 32px;
 }
 
 .status-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 24px;
-  min-height: 73px;
-  padding: 16px 32px;
+  width: 100%;
+  height: 60px;
+  padding: 16px 24px;
   border-radius: 6px;
-  background: #f8f8f9;
+  background: var(--jh-panel);
 }
 
 .status-row__left {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 24px;
   color: var(--jh-text-secondary);
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 14px;
+  line-height: 22px;
 }
 
 .service-list {
   display: grid;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  width: 100%;
+  height: 84px;
 }
 
 .service-tile {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 102px;
-  padding: 16px;
+  gap: 8px;
+  width: 100%;
+  height: 84px;
+  padding: 10px 24px;
   border: 0;
   border-radius: 6px;
-  background: #f8f8f9;
-  cursor: pointer;
-}
-
-.jh-checkbox {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  background-color: var(--jh-panel);
+  background-image: none;
   color: var(--jh-text-secondary);
-  font-size: 16px;
-  line-height: 24px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 22px;
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.jh-checkbox__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
-  background: var(--jh-blue);
+.service-tile:hover {
+  background-color: #f1f7ff;
 }
 
-.jh-checkbox__mark {
-  width: 16px;
-  height: 16px;
+.service-tile[aria-checked="false"] {
+  background-color: var(--jh-panel);
+  color: var(--jh-text-secondary);
 }
 </style>
