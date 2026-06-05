@@ -745,6 +745,70 @@
   font-weight: 700;
 }
 
+.medicine-table {
+  width: max(100%, var(--jh-table-width));
+  min-width: var(--jh-table-width);
+  overflow: hidden;
+  border: 1px solid var(--jh-table-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.medicine-table__row {
+  display: grid;
+  grid-template-columns:
+    32px
+    minmax(126px, 1.45fr)
+    minmax(58px, 0.72fr)
+    minmax(88px, 1fr)
+    minmax(76px, 0.82fr)
+    minmax(88px, 0.9fr)
+    minmax(86px, 0.9fr)
+    minmax(48px, 0.5fr)
+    minmax(60px, 0.62fr)
+    minmax(44px, 0.48fr)
+    minmax(48px, 0.5fr);
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--jh-table-row-border);
+  color: var(--jh-table-cell-text);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.medicine-table__row:last-child {
+  border-bottom: 0;
+}
+
+.medicine-table__head {
+  min-height: 48px;
+  background: var(--jh-table-head-bg);
+  color: var(--jh-table-head-text);
+  font-weight: 700;
+}
+
+.medicine-table__row > * {
+  min-width: 0;
+}
+
+.medicine-table__row > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.medicine-table__row > span:first-child,
+.medicine-table__row > span:nth-child(8),
+.medicine-table__row > input[data-medicine-field="quantity"] {
+  text-align: center;
+}
+
+.medicine-table__row > :last-child {
+  justify-self: end;
+}
+
 .medicine-table__row--warning-general {
   background: #fffbeb;
   color: #9a7200;
