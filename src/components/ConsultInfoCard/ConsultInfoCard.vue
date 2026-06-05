@@ -35,15 +35,22 @@
             :key="`${voice.title}-${index}`"
             :class="[
               'followup-voucher-voice followup-voucher-item',
-              isVoiceViewed(voice, index) ? 'followup-voucher-item--viewed' : 'followup-voucher-item--unviewed'
+              isVoiceViewed(voice, index) ? 'followup-voucher-item--viewed' : 'followup-voucher-item--unviewed',
+              isVoiceActive(voice, index) ? 'is-playing' : ''
             ]"
             type="button"
             :aria-label="`播放${voice.title}，${voice.duration}秒`"
             :aria-pressed="String(isVoiceActive(voice, index))"
+            data-followup-voucher-item="true"
             :data-followup-voucher-status="isVoiceViewed(voice, index) ? 'viewed' : 'unviewed'"
+            :data-followup-voice-title="voice.title"
+            :data-followup-voice-duration="voice.duration"
+            :data-followup-voice-step="isVoiceActive(voice, index) ? String(activeVoiceWaveStep) : null"
             @click="openVoice(voice, index)"
           >
-            <span class="followup-voice-time">{{ voice.duration }}"</span>
+            <span class="followup-voice-time">
+              <span data-followup-voice-current>{{ getVoiceCurrentDuration(voice, index) }}"</span>
+            </span>
             <VoiceWaveform />
           </button>
         </div>
@@ -77,7 +84,7 @@
 </template>
 
 <script setup>
-import { computed, h, ref } from 'vue'
+import { computed, h, onBeforeUnmount, ref } from 'vue'
 import { assetUrl } from '../../utils/assetUrl.js'
 
 defineOptions({
@@ -118,9 +125,15 @@ const props = defineProps({
 const emit = defineEmits(['preview-image'])
 const activeVoice = ref(null)
 const activeVoiceKey = ref('')
+const activeVoiceRemaining = ref(0)
+const activeVoiceWaveStep = ref(0)
 const viewedImageKeys = ref(new Set())
 const viewedVoiceKeys = ref(new Set())
 const dialogVoiceWaveHeights = [12, 18, 10, 20, 14, 8, 8, 6, 4, 10, 14, 14, 12, 10, 10, 8]
+const followUpVoiceWaveFrameMs = 250
+const followUpVoiceWaveFrameCount = 4
+let activeVoiceTimer = 0
+let activeVoiceWaveTimer = 0
 
 const normalizedImages = computed(() =>
   props.images.map((image, index) =>
@@ -177,6 +190,10 @@ function isVoiceActive(voice, index) {
   return Boolean(activeVoice.value) && activeVoiceKey.value === voiceKey(voice, index)
 }
 
+function getVoiceCurrentDuration(voice, index) {
+  return isVoiceActive(voice, index) ? activeVoiceRemaining.value : voice.duration
+}
+
 function previewImage(image, index) {
   markViewed(viewedImageKeys, imageKey(image, index))
   emit('preview-image', { image, index, images: normalizedImages.value })
@@ -184,15 +201,41 @@ function previewImage(image, index) {
 
 function openVoice(voice, index) {
   const key = voiceKey(voice, index)
+  if (activeVoiceKey.value === key) {
+    stopFollowUpVoicePlayback()
+    return
+  }
+  stopFollowUpVoicePlayback()
   markViewed(viewedVoiceKeys, key)
   activeVoiceKey.value = key
   activeVoice.value = voice
+  activeVoiceRemaining.value = Math.max(1, Number(voice.duration || 0))
+  activeVoiceWaveStep.value = 0
+  activeVoiceWaveTimer = window.setInterval(() => {
+    activeVoiceWaveStep.value = (activeVoiceWaveStep.value + 1) % followUpVoiceWaveFrameCount
+  }, followUpVoiceWaveFrameMs)
+  activeVoiceTimer = window.setInterval(() => {
+    activeVoiceRemaining.value = Math.max(0, activeVoiceRemaining.value - 1)
+    if (activeVoiceRemaining.value <= 0) stopFollowUpVoicePlayback()
+  }, 1000)
 }
 
 function closeVoice() {
+  stopFollowUpVoicePlayback()
+}
+
+function stopFollowUpVoicePlayback() {
+  window.clearInterval(activeVoiceTimer)
+  window.clearInterval(activeVoiceWaveTimer)
+  activeVoiceTimer = 0
+  activeVoiceWaveTimer = 0
   activeVoice.value = null
   activeVoiceKey.value = ''
+  activeVoiceRemaining.value = 0
+  activeVoiceWaveStep.value = 0
 }
+
+onBeforeUnmount(stopFollowUpVoicePlayback)
 
 function VoiceWaveform() {
   return h(
@@ -463,12 +506,24 @@ function VoiceWaveform() {
 }
 
 .followup-voice-wave__active {
-  opacity: 1;
+  opacity: 0;
   stroke: #1e2939;
+  transition: opacity 160ms ease;
 }
 
 .followup-voice-wave__active--1 {
   fill: #1e2939;
   stroke: none;
+}
+
+.followup-voucher-voice[data-followup-voice-step="1"] .followup-voice-wave__active--1,
+.followup-voucher-voice[data-followup-voice-step="2"] .followup-voice-wave__active--1,
+.followup-voucher-voice[data-followup-voice-step="2"] .followup-voice-wave__active--2,
+.followup-voucher-voice[data-followup-voice-step="3"] .followup-voice-wave__active {
+  opacity: 1;
+}
+
+.followup-voucher-item--viewed:not(.is-playing) .followup-voice-wave__active {
+  opacity: 1;
 }
 </style>
