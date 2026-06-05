@@ -435,6 +435,99 @@ body {
   margin: 0;
 }
 
+.component-card__preview--shell,
+.component-card__preview--sidebar,
+.component-card__preview--workbench,
+.component-card__preview--quick-actions {
+  place-items: stretch;
+  overflow: hidden;
+}
+
+.component-card__preview--shell .app-shell {
+  width: 100%;
+  min-width: 0;
+  min-height: 260px;
+  height: 260px;
+}
+
+.component-card__preview--shell .sidebar {
+  height: 260px;
+}
+
+.docs-mini-topbar {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  height: var(--jh-topbar-height);
+  padding: 0 18px;
+  background: #ffffff;
+  box-shadow: var(--jh-shadow);
+  color: var(--jh-color-text-secondary);
+  font-size: 14px;
+}
+
+.docs-mini-main {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  background: #f2f3f4;
+  color: var(--jh-color-text-muted);
+}
+
+.component-card__preview--sidebar .sidebar {
+  position: relative;
+  width: 199px;
+  min-width: 199px;
+  height: 340px;
+  max-height: 340px;
+}
+
+.component-card__preview--workbench .waiting-card,
+.component-card__preview--workbench .consult-card,
+.component-card__preview--workbench .service-card {
+  width: 100%;
+  min-height: 230px;
+}
+
+.component-card__preview--workbench .waiting-card {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.component-card__preview--workbench .waiting-card__right {
+  display: none;
+}
+
+.component-card__preview--workbench .service-list {
+  grid-template-columns: 1fr;
+}
+
+.component-card__preview--workbench .service-tile {
+  min-height: 52px;
+}
+
+.component-card__preview--quick-actions .quick-entry-card {
+  width: 100%;
+  min-height: 360px;
+  padding: 20px;
+}
+
+.component-card__preview--quick-actions .quick-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.component-card__preview--quick-actions .quick-card {
+  min-height: 128px;
+  padding: 14px;
+}
+
+.component-card__preview--quick-actions .quick-entry-card__header {
+  margin-bottom: 16px;
+}
+
 .component-card footer {
   display: flex;
   flex-wrap: wrap;

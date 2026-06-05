@@ -204,12 +204,18 @@ import {
   Avatar,
   Button,
   Card,
+  ConsultEntryCard,
   DurationChip,
   EmptyState,
   FollowUpVoucher,
+  QuickActionsPanel,
   ReadTag,
+  ServiceStatusCard,
   StatusBadge,
   TypeIcon,
+  WaitingStatusCard,
+  WorkspaceShell,
+  WorkspaceSidebar,
   assetUrl
 } from './index.js'
 
@@ -218,7 +224,7 @@ const copiedToken = ref('')
 
 const navItems = [
   { id: 'foundations', name: 'Foundations', count: '58' },
-  { id: 'components', name: 'Components', count: '9' },
+  { id: 'components', name: 'Components', count: '15' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '44' }
@@ -293,7 +299,97 @@ const voucherVoices = [
   { title: '语音凭证2', duration: 7 }
 ]
 
+const workspaceMenuGroups = [
+  {
+    title: '工作台',
+    items: [
+      { label: '首页', icon: 'home', active: true },
+      { label: '数据看板', icon: 'dashboard' }
+    ]
+  },
+  {
+    title: '运营相关',
+    items: [
+      { label: '出诊管理', icon: 'briefcase' },
+      { label: '值班打卡', icon: 'calendar' }
+    ]
+  }
+]
+const workspaceQueueItems = [
+  { key: 'text', label: '图文问诊', value: 1 },
+  { key: 'video', label: '视频问诊', value: 3 },
+  { key: 'consult', label: '图文咨询', value: 2 }
+]
+const workspaceServices = [
+  { key: 'text', label: '图文问诊', enabled: true },
+  { key: 'video', label: '视频问诊', enabled: true },
+  { key: 'consult', label: '图文咨询', enabled: true }
+]
+const workspaceQuickActions = [
+  { title: '排班管理', desc: '查看值班安排', icon: 'quickCalendar', feature: 'schedule' },
+  { title: '历史问诊', desc: '历史病历查询', icon: 'clock', feature: 'history' },
+  { title: '组件系统', desc: '查看 Elements', icon: 'document', feature: 'elements' },
+  { title: '', desc: '添加快捷入口', icon: 'plus', isAdd: true }
+]
+
 const componentItems = [
+  {
+    name: 'WorkspaceShell',
+    importName: 'WorkspaceShell',
+    description: '桌面工作台外壳，承载顶部栏、侧栏和页面内容。',
+    api: ['collapsed', 'expanded', 'slots'],
+    previewClass: 'component-card__preview--shell',
+    preview: () =>
+      h(
+        WorkspaceShell,
+        { collapsed: false, expanded: true },
+        {
+          topbar: () => h('header', { class: 'topbar docs-mini-topbar' }, '顶部栏'),
+          sidebar: () => h(WorkspaceSidebar, { menuGroups: workspaceMenuGroups, collapsed: false }),
+          default: () => h('main', { class: 'docs-mini-main' }, '工作台内容')
+        }
+      )
+  },
+  {
+    name: 'WorkspaceSidebar',
+    importName: 'WorkspaceSidebar',
+    description: '左侧菜单、标签文本和汉堡收起/展开按钮。',
+    api: ['menuGroups', 'collapsed', 'toggle'],
+    previewClass: 'component-card__preview--sidebar',
+    preview: () => h(WorkspaceSidebar, { menuGroups: workspaceMenuGroups, collapsed: false })
+  },
+  {
+    name: 'WaitingStatusCard',
+    importName: 'WaitingStatusCard',
+    description: '桌面工作台候诊状态卡片。',
+    api: ['total', 'items', 'title', 'hint'],
+    previewClass: 'component-card__preview--workbench',
+    preview: () => h(WaitingStatusCard, { total: 6, items: workspaceQueueItems })
+  },
+  {
+    name: 'ConsultEntryCard',
+    importName: 'ConsultEntryCard',
+    description: '进入主工作流的高亮入口卡片。',
+    api: ['title', 'description', 'hasQueue'],
+    previewClass: 'component-card__preview--workbench',
+    preview: () => h(ConsultEntryCard, { hasQueue: true })
+  },
+  {
+    name: 'ServiceStatusCard',
+    importName: 'ServiceStatusCard',
+    description: '桌面工作台服务状态和开关集合。',
+    api: ['status', 'services', 'toggle'],
+    previewClass: 'component-card__preview--workbench',
+    preview: () => h(ServiceStatusCard, { status: 'online', services: workspaceServices })
+  },
+  {
+    name: 'QuickActionsPanel',
+    importName: 'QuickActionsPanel',
+    description: '高频操作入口，内置编辑态、注意点和排班展开面板。',
+    api: ['actions', 'select', 'add', 'remove'],
+    previewClass: 'component-card__preview--quick-actions',
+    preview: () => h(QuickActionsPanel, { actions: workspaceQuickActions })
+  },
   {
     name: 'Button',
     importName: 'Button',
@@ -415,10 +511,10 @@ const migrationItems = [
   },
   {
     title: '医生端业务布局',
-    state: '保留',
-    tone: 'warning',
-    description: '问诊工作台、处方编辑、风险检测弹窗等仍包含医生端流程与字段，暂不迁入 UI。',
-    path: 'JiaHong_YiSheng/src/styles/legacy-app.css'
+    state: '拆分中',
+    tone: 'info',
+    description: '首页桌面工作台和高频入口已组件化；处方编辑、风险检测弹窗等仍包含医生端流程与字段，暂不迁入 UI。',
+    path: 'WorkspaceShell / QuickActionsPanel'
   }
 ]
 
