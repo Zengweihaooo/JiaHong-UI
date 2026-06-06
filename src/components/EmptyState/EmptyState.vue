@@ -1,5 +1,5 @@
 <template>
-  <div class="jh-empty-state">
+  <div class="jh-empty-state" :style="emptyStateStyle">
     <img v-if="image" class="jh-empty-state__image" :src="image" alt="" aria-hidden="true" />
     <div class="jh-empty-state__copy">
       <h3 v-if="title">{{ title }}</h3>
@@ -10,11 +10,13 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 defineOptions({
   name: 'EmptyState'
 })
 
-defineProps({
+const props = defineProps({
   image: {
     type: String,
     default: ''
@@ -26,8 +28,32 @@ defineProps({
   description: {
     type: String,
     default: ''
+  },
+  imageWidth: {
+    type: [Number, String],
+    default: 160
+  },
+  imageHeight: {
+    type: [Number, String],
+    default: 160
+  },
+  imageFit: {
+    type: String,
+    default: 'contain',
+    validator: (value) => ['contain', 'cover', 'fill', 'none', 'scale-down'].includes(value)
   }
 })
+
+const emptyStateStyle = computed(() => ({
+  '--jh-empty-state-image-width': toCssSize(props.imageWidth),
+  '--jh-empty-state-image-height': toCssSize(props.imageHeight),
+  '--jh-empty-state-image-fit': props.imageFit
+}))
+
+function toCssSize(value) {
+  if (typeof value === 'number') return `${value}px`
+  return value || 'auto'
+}
 </script>
 
 <style>
@@ -41,8 +67,11 @@ defineProps({
 }
 
 .jh-empty-state__image {
-  width: min(160px, 60%);
-  height: auto;
+  display: block;
+  width: var(--jh-empty-state-image-width, 160px);
+  height: var(--jh-empty-state-image-height, 160px);
+  max-width: 100%;
+  object-fit: var(--jh-empty-state-image-fit, contain);
 }
 
 .jh-empty-state__copy {

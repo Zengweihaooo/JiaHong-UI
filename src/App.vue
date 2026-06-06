@@ -195,7 +195,12 @@
         </div>
         <div class="asset-grid">
           <article v-for="asset in assets" :key="asset.name" class="asset-card">
-            <img :src="assetUrl(asset.path)" :alt="asset.name" />
+            <span
+              :class="['asset-card__media', asset.tone ? `asset-card__media--${asset.tone}` : '']"
+              :style="{ '--asset-preview-width': asset.width, '--asset-preview-height': asset.height }"
+            >
+              <img :src="assetUrl(asset.path)" :alt="asset.name" />
+            </span>
             <strong>{{ asset.name }}</strong>
             <code>{{ asset.path }}</code>
           </article>
@@ -593,7 +598,7 @@ const componentItems = [
 ]
 
 const assets = [
-  { name: 'Logo', path: 'assets/figma-home/logo.png' },
+  { name: 'Logo', path: 'assets/figma-home/logo.png', width: '72px', height: '34px' },
   { name: 'Sidebar Menu', path: 'assets/figma-home/menu-icon.svg' },
   { name: 'Home', path: 'assets/figma-home/home.svg' },
   { name: 'Dashboard', path: 'assets/figma-home/trello.svg' },
@@ -604,16 +609,16 @@ const assets = [
   { name: 'Shift Calendar', path: 'assets/figma-home/calendar.svg' },
   { name: 'Profile', path: 'assets/figma-home/user.svg' },
   { name: 'Doctor Commission', path: 'assets/figma-home/pocket.svg' },
-  { name: 'Consult Entry', path: 'assets/figma-home/consult-icon.svg' },
+  { name: 'Consult Entry', path: 'assets/figma-home/consult-icon.svg', tone: 'blue' },
   { name: 'Quick Calendar Box', path: 'assets/figma-home/quick-schedule-box.svg' },
-  { name: 'Quick Calendar Mark', path: 'assets/figma-home/quick-schedule-mark.svg' },
+  { name: 'Quick Calendar Mark', path: 'assets/figma-home/quick-schedule-mark.svg', width: '42px', height: '28px' },
   { name: 'Quick Document', path: 'assets/figma-home/quick-doc.svg' },
   { name: 'Quick Plus', path: 'assets/figma-home/quick-plus.svg' },
   { name: 'Quick Clock Circle', path: 'assets/figma-home/quick-clock-circle.svg' },
-  { name: 'Quick Clock Hand', path: 'assets/figma-home/quick-clock-hand.svg' },
-  { name: 'Checkmark', path: 'assets/figma-home/checkmark.svg' },
-  { name: 'Search', path: 'assets/search-icon.png' },
-  { name: 'Empty', path: 'assets/room-empty.svg' },
+  { name: 'Quick Clock Hand', path: 'assets/figma-home/quick-clock-hand.svg', width: '28px', height: '42px' },
+  { name: 'Checkmark', path: 'assets/figma-home/checkmark.svg', tone: 'blue' },
+  { name: 'Search', path: 'assets/search-icon.png', tone: 'blue' },
+  { name: 'Empty', path: 'assets/room-empty.svg', width: '56px', height: '56px' },
   { name: 'Video', path: 'assets/figma-room/video-consult.svg' },
   { name: 'Text', path: 'assets/figma-room/text-consult.svg' },
   { name: 'Consult', path: 'assets/figma-room/consult.svg' },
