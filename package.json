@@ -11,14 +11,14 @@
       "import": "./dist/jiahong-ui.js",
       "require": "./dist/jiahong-ui.cjs"
     },
-    "./styles.css": "./dist/styles.css",
+    "./styles.css": "./styles/index.css",
     "./fonts.css": "./styles/fonts.css",
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
-    "styles/fonts.css",
+    "styles",
     "assets",
     "README.md"
   ],

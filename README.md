@@ -23,7 +23,7 @@ import '@jiahong/ui/styles.css'
 import '@jiahong/ui/fonts.css'
 ```
 
-`styles.css` 默认不内联字体文件，避免组件库主样式体积膨胀；字体文件统一放在 `assets/fonts/`。
+`styles.css` 导出源码入口 `styles/index.css`，避免业务端依赖未提交的 `dist/` 构建产物；字体文件统一放在 `assets/fonts/`，默认不内联到主样式。
 
 ## Exports
 
