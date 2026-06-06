@@ -381,7 +381,7 @@ body {
 
 .component-card {
   display: grid;
-  grid-template-rows: auto minmax(160px, 1fr) auto;
+  grid-template-rows: auto auto auto;
   min-height: 310px;
   overflow: hidden;
 }
@@ -413,10 +413,80 @@ body {
   font-size: 12px;
 }
 
-.component-card__preview {
+.component-preview-shell {
+  position: relative;
   display: grid;
+  height: 220px;
+  margin: 14px 18px 12px;
+  overflow: hidden;
+  border: 1px solid #edf1f5;
+  border-radius: 8px;
+  background:
+    linear-gradient(45deg, rgba(216, 221, 225, 0.2) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(216, 221, 225, 0.2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(216, 221, 225, 0.2) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(216, 221, 225, 0.2) 75%);
+  background-color: #f8fafc;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+}
+
+.component-card__preview {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
   place-items: center;
-  padding: 22px 18px;
+}
+
+.component-card__preview-scale {
+  display: grid;
+  width: var(--preview-width);
+  height: var(--preview-height);
+  align-items: center;
+  justify-items: center;
+  transform: scale(var(--preview-scale));
+  transform-origin: center;
+}
+
+.component-preview-trigger {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  border: 0;
+  background: linear-gradient(180deg, rgba(10, 20, 32, 0.04), transparent 42%);
+  cursor: zoom-in;
+}
+
+.component-preview-trigger span {
+  display: inline-flex;
+  min-width: 36px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  margin: 8px;
+  border: 1px solid rgba(22, 119, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--jh-color-primary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 6px 16px rgba(16, 42, 67, 0.1);
+}
+
+.component-preview-trigger:focus-visible {
+  outline: 2px solid var(--jh-color-primary);
+  outline-offset: -2px;
 }
 
 .component-card__preview--compact .jh-empty-state {
@@ -447,15 +517,43 @@ body {
   overflow: hidden;
 }
 
-.component-card__preview--shell .app-shell {
-  width: 100%;
-  min-width: 0;
-  min-height: 260px;
-  height: 260px;
+.component-card__preview--shell .component-card__preview-scale,
+.component-card__preview--sidebar .component-card__preview-scale,
+.component-card__preview--workbench .component-card__preview-scale,
+.component-card__preview--quick-actions .component-card__preview-scale,
+.component-card__preview--pending-room .component-card__preview-scale,
+.component-card__preview--video .component-card__preview-scale,
+.component-card__preview--consult-info .component-card__preview-scale,
+.component-card__preview--risk-tip .component-card__preview-scale {
+  place-self: center;
 }
 
-.component-card__preview--shell .sidebar {
-  height: 260px;
+.component-card__preview--shell .component-card__preview-scale,
+.component-card__preview--sidebar .component-card__preview-scale,
+.component-card__preview--workbench .component-card__preview-scale,
+.component-card__preview--quick-actions .component-card__preview-scale,
+.component-card__preview--pending-room .component-card__preview-scale,
+.component-card__preview--video .component-card__preview-scale,
+.component-card__preview--consult-info .component-card__preview-scale,
+.component-card__preview--risk-tip .component-card__preview-scale {
+  overflow: hidden;
+  border: 1px solid rgba(216, 221, 225, 0.86);
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(16, 42, 67, 0.14);
+}
+
+.component-card__preview--shell .app-shell,
+.component-preview-dialog__canvas.component-card__preview--shell .app-shell {
+  width: 100%;
+  min-width: 0;
+  min-height: var(--preview-height);
+  height: var(--preview-height);
+}
+
+.component-card__preview--shell .sidebar,
+.component-preview-dialog__canvas.component-card__preview--shell .sidebar {
+  height: var(--preview-height);
 }
 
 .docs-mini-topbar {
@@ -481,102 +579,150 @@ body {
   color: var(--jh-color-text-muted);
 }
 
-.component-card__preview--sidebar .sidebar {
+.component-card__preview--sidebar .sidebar,
+.component-preview-dialog__canvas.component-card__preview--sidebar .sidebar {
   position: relative;
   width: 199px;
   min-width: 199px;
-  height: 340px;
-  max-height: 340px;
+  height: var(--preview-height);
+  max-height: var(--preview-height);
 }
 
 .component-card__preview--workbench .waiting-card,
 .component-card__preview--workbench .consult-card,
-.component-card__preview--workbench .service-card {
+.component-card__preview--workbench .service-card,
+.component-preview-dialog__canvas.component-card__preview--workbench .waiting-card,
+.component-preview-dialog__canvas.component-card__preview--workbench .consult-card,
+.component-preview-dialog__canvas.component-card__preview--workbench .service-card {
   width: 100%;
-  min-height: 230px;
 }
 
-.component-card__preview--workbench .waiting-card {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.component-card__preview--workbench .waiting-card__right {
-  display: none;
-}
-
-.component-card__preview--workbench .service-list {
-  grid-template-columns: 1fr;
-}
-
-.component-card__preview--workbench .service-tile {
-  min-height: 52px;
-}
-
-.component-card__preview--quick-actions .quick-entry-card {
+.component-card__preview--quick-actions .quick-entry-card,
+.component-preview-dialog__canvas.component-card__preview--quick-actions .quick-entry-card {
   width: 100%;
-  min-height: 360px;
-  padding: 20px;
+  height: 100%;
 }
 
-.component-card__preview--quick-actions .quick-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.component-card__preview--quick-actions .quick-card {
-  min-height: 128px;
-  padding: 14px;
-}
-
-.component-card__preview--quick-actions .quick-entry-card__header {
-  margin-bottom: 16px;
-}
-
-.component-card__preview--pending-room .room-card--pending-consult {
+.component-card__preview--pending-room .room-card--pending-consult,
+.component-preview-dialog__canvas.component-card__preview--pending-room .room-card--pending-consult {
   position: relative;
   width: 100%;
   min-width: 0;
-  height: 360px;
-  min-height: 360px;
+  height: var(--preview-height);
+  min-height: var(--preview-height);
 }
 
-.component-card__preview--pending-room .consult-workspace {
-  grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.45fr);
-}
-
-.component-card__preview--pending-room .medicine-scroll-area {
-  overflow: hidden;
-}
-
-.component-card__preview--video .video-window {
+.component-card__preview--video .video-window,
+.component-preview-dialog__canvas.component-card__preview--video .video-window {
   width: 100%;
-  min-height: 230px;
-}
-
-.component-card__preview--video .video-window__stage {
-  min-height: 230px;
+  height: auto;
+  margin: 0;
 }
 
 .component-card__preview--consult-info .consult-info-card,
-.component-card__preview--risk-tip .medicine-risk-tip {
+.component-card__preview--risk-tip .medicine-risk-tip,
+.component-preview-dialog__canvas.component-card__preview--consult-info .consult-info-card,
+.component-preview-dialog__canvas.component-card__preview--risk-tip .medicine-risk-tip {
   width: 100%;
   margin: 0;
 }
 
-.component-card__preview--consult-info .consult-info-card {
+.component-card__preview.component-card__preview--consult-info .consult-info-card {
   padding: 0;
   background: transparent;
 }
 
-.component-card__preview--consult-info .consult-info-card__row {
+.component-card__preview.component-card__preview--consult-info .consult-info-card__row {
   grid-template-columns: 80px minmax(0, 1fr);
 }
 
-.component-card__preview--risk-tip .medicine-risk-tip__hint {
+.component-card__preview.component-card__preview--risk-tip .medicine-risk-tip__hint {
   max-width: 150px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.component-preview-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  padding: 32px;
+  background: rgba(10, 20, 32, 0.52);
+  place-items: center;
+}
+
+.component-preview-dialog__panel {
+  display: grid;
+  max-width: calc(100vw - 64px);
+  max-height: calc(100vh - 64px);
+  overflow: hidden;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 24px 64px rgba(16, 42, 67, 0.22);
+}
+
+.component-preview-dialog__head {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px 12px 18px;
+  border-bottom: 1px solid var(--jh-color-border);
+}
+
+.component-preview-dialog__head div {
+  display: grid;
+  gap: 2px;
+}
+
+.component-preview-dialog__head strong {
+  color: var(--jh-color-text-primary);
+  font-size: 15px;
+  line-height: 22px;
+}
+
+.component-preview-dialog__head span {
+  color: var(--jh-color-text-muted);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.component-preview-dialog__close {
+  display: inline-grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--jh-color-border);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--jh-color-text-secondary);
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.component-preview-dialog__close:hover {
+  border-color: rgba(22, 119, 255, 0.35);
+  color: var(--jh-color-primary);
+}
+
+.component-preview-dialog__viewport {
+  max-width: calc(100vw - 64px);
+  max-height: calc(100vh - 120px);
+  overflow: auto;
+  background: #f8fafc;
+}
+
+.component-preview-dialog__canvas {
+  width: var(--preview-width);
+  min-width: var(--preview-width);
+  height: var(--preview-height);
+  min-height: var(--preview-height);
+  background: #ffffff;
 }
 
 .component-card footer {
