@@ -240,6 +240,11 @@
   --jh-duration-chip-icon-size: 18px;
   --jh-duration-chip-clock-stroke: 1.4px;
   --jh-chat-bubble-max-width: 72%;
+  --jh-consult-chat-width: 424px;
+  --jh-consult-prescription-width: 728px;
+  --jh-consult-card-width: 1152px;
+  --jh-consult-workspace-height: 740px;
+  --jh-consult-top-gap: 24px;
   --jh-layout-sidebar: 208px;
   --jh-layout-sidebar-width: var(--jh-layout-sidebar);
   --jh-layout-room-sidebar: 280px;
