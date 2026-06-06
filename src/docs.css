@@ -438,7 +438,11 @@ body {
 .component-card__preview--shell,
 .component-card__preview--sidebar,
 .component-card__preview--workbench,
-.component-card__preview--quick-actions {
+.component-card__preview--quick-actions,
+.component-card__preview--pending-room,
+.component-card__preview--video,
+.component-card__preview--consult-info,
+.component-card__preview--risk-tip {
   place-items: stretch;
   overflow: hidden;
 }
@@ -526,6 +530,53 @@ body {
 
 .component-card__preview--quick-actions .quick-entry-card__header {
   margin-bottom: 16px;
+}
+
+.component-card__preview--pending-room .room-card--pending-consult {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  height: 360px;
+  min-height: 360px;
+}
+
+.component-card__preview--pending-room .consult-workspace {
+  grid-template-columns: minmax(180px, 1fr) minmax(260px, 1.45fr);
+}
+
+.component-card__preview--pending-room .medicine-scroll-area {
+  overflow: hidden;
+}
+
+.component-card__preview--video .video-window {
+  width: 100%;
+  min-height: 230px;
+}
+
+.component-card__preview--video .video-window__stage {
+  min-height: 230px;
+}
+
+.component-card__preview--consult-info .consult-info-card,
+.component-card__preview--risk-tip .medicine-risk-tip {
+  width: 100%;
+  margin: 0;
+}
+
+.component-card__preview--consult-info .consult-info-card {
+  padding: 0;
+  background: transparent;
+}
+
+.component-card__preview--consult-info .consult-info-card__row {
+  grid-template-columns: 80px minmax(0, 1fr);
+}
+
+.component-card__preview--risk-tip .medicine-risk-tip__hint {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .component-card footer {

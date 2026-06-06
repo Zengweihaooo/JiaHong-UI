@@ -205,14 +205,18 @@ import {
   Button,
   Card,
   ConsultEntryCard,
+  ConsultInfoCard,
   DurationChip,
   EmptyState,
   FollowUpVoucher,
+  MedicineRiskTip,
   QuickActionsPanel,
   ReadTag,
+  RoomPendingWorkspace,
   ServiceStatusCard,
   StatusBadge,
   TypeIcon,
+  VideoCallWindow,
   WaitingStatusCard,
   WorkspaceShell,
   WorkspaceSidebar,
@@ -224,7 +228,7 @@ const copiedToken = ref('')
 
 const navItems = [
   { id: 'foundations', name: 'Foundations', count: '58' },
-  { id: 'components', name: 'Components', count: '15' },
+  { id: 'components', name: 'Components', count: '19' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '44' }
@@ -391,6 +395,22 @@ const componentItems = [
     preview: () => h(QuickActionsPanel, { actions: workspaceQuickActions })
   },
   {
+    name: 'RoomPendingWorkspace',
+    importName: 'RoomPendingWorkspace',
+    description: '待接诊问诊室骨架，复用右侧患者、诊断和药品占位样式。',
+    api: ['patientFields', 'medicineHeaders', 'refresh'],
+    previewClass: 'component-card__preview--pending-room',
+    preview: () => h(RoomPendingWorkspace, { skeletonCount: 3 })
+  },
+  {
+    name: 'VideoCallWindow',
+    importName: 'VideoCallWindow',
+    description: 'H5 视频问诊画面和摄像头、麦克风控制。',
+    api: ['cameraOn', 'micOn', 'patientImage', 'toggle'],
+    previewClass: 'component-card__preview--video',
+    preview: () => h(VideoCallWindow, { cameraOn: false, micOn: true, cameraStatusText: '摄像头已关闭' })
+  },
+  {
     name: 'Button',
     importName: 'Button',
     description: '基础操作按钮，支持语义色和尺寸。',
@@ -475,6 +495,37 @@ const componentItems = [
     api: ['variant', 'images', 'voices', 'title'],
     previewClass: 'component-card__preview--voucher',
     preview: () => h(FollowUpVoucher, { title: '复诊凭证', variant: 'mixed', images: voucherImages, voices: voucherVoices })
+  },
+  {
+    name: 'ConsultInfoCard',
+    importName: 'ConsultInfoCard',
+    description: '问诊病情描述、图片和语音附件展示。',
+    api: ['description', 'images', 'voices', 'preview-image'],
+    previewClass: 'component-card__preview--consult-info',
+    preview: () =>
+      h(ConsultInfoCard, {
+        title: '咨询信息',
+        description: '咳嗽三天，有黄痰，夜间咳嗽明显，体温 37.4。',
+        images: voucherImages.slice(0, 2),
+        voices: voucherVoices.slice(0, 1)
+      })
+  },
+  {
+    name: 'MedicineRiskTip',
+    importName: 'MedicineRiskTip',
+    description: '处方药品行下方的 H5 风险提示卡。',
+    api: ['level', 'categories', 'message', 'suggestion'],
+    previewClass: 'component-card__preview--risk-tip',
+    preview: () =>
+      h(MedicineRiskTip, {
+        title: '药品风险提示 · 盐酸氨溴索片',
+        level: 'severe',
+        levelLabel: '严重警告',
+        categories: ['用法用量'],
+        message: '[警示信息]盐酸氨溴索片当前频次与用量需核对，请确认是否符合患者咳嗽咳痰情况。',
+        suggestion: '[建议信息]请调整服用频次或用量后，再提交处方。',
+        activeMedicineIndex: 1
+      })
   }
 ]
 
@@ -492,7 +543,7 @@ const migrationItems = [
     title: '基础组件',
     state: '已上移',
     tone: 'success',
-    description: 'StatusBadge、ReadTag、DurationChip、TypeIcon、Avatar、Button、Card、EmptyState、FollowUpVoucher 从统一入口导出。',
+    description: '19 个 Vue 组件已从统一入口导出，覆盖基础控件、首页工作台、视频问诊和处方风险提示。',
     path: 'import { StatusBadge } from "@jiahong/ui"'
   },
   {
