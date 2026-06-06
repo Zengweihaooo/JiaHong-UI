@@ -1,6 +1,10 @@
 <template>
   <button
-    :class="['consult-card', { 'consult-card--has-queue': hasQueue }]"
+    :class="[
+      'consult-card',
+      `consult-card--${resolvedVariant}`,
+      { 'consult-card--has-queue': isYellowVariant }
+    ]"
     type="button"
     :aria-label="ariaLabel || title"
     @click="$emit('click', $event)"
@@ -41,6 +45,10 @@ const props = defineProps({
     type: String,
     default: 'assets/figma-home/consult-bg.png'
   },
+  variant: {
+    type: String,
+    default: ''
+  },
   hasQueue: {
     type: Boolean,
     default: false
@@ -55,6 +63,20 @@ defineEmits(['click'])
 
 const iconSrc = computed(() => assetUrl(props.icon))
 const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
+const resolvedVariant = computed(() => {
+  const value = String(props.variant || '').toLowerCase()
+
+  if (['yellow', 'queue', 'warning'].includes(value)) {
+    return 'yellow'
+  }
+
+  if (['blue', 'default', 'primary'].includes(value)) {
+    return 'blue'
+  }
+
+  return props.hasQueue ? 'yellow' : 'blue'
+})
+const isYellowVariant = computed(() => resolvedVariant.value === 'yellow')
 </script>
 
 <style>
@@ -104,10 +126,12 @@ const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
   transition: opacity 0.18s ease, border-color 0.18s ease;
 }
 
+.consult-card--yellow,
 .consult-card--has-queue {
   background: linear-gradient(270deg, #ffc670 0%, #f99100 48%, #f47f01 100%);
 }
 
+.consult-card--yellow::before,
 .consult-card--has-queue::before {
   opacity: 1;
 }
@@ -120,6 +144,9 @@ const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
   box-shadow: 0 18px 36px -18px rgba(0, 99, 255, 0.72), 0 0 0 4px rgba(10, 119, 255, 0.16);
 }
 
+.consult-card--yellow:hover,
+.consult-card--yellow:focus-visible,
+.consult-card--yellow.is-selected,
 .consult-card--has-queue:hover,
 .consult-card--has-queue:focus-visible,
 .consult-card--has-queue.is-selected {
@@ -155,6 +182,7 @@ const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
     transform 0.18s ease;
 }
 
+.consult-card--yellow .consult-card__bg,
 .consult-card--has-queue .consult-card__bg {
   opacity: 0.72;
   filter: sepia(1) saturate(2.35) hue-rotate(350deg) brightness(1.08) contrast(0.94);
@@ -175,7 +203,8 @@ const backgroundSrc = computed(() => assetUrl(props.backgroundImage))
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 240px;
+  height: 100%;
+  min-height: 240px;
   padding: 24px 32px;
   border-radius: 12px;
   filter: drop-shadow(0 1px 1.5px rgba(16, 42, 67, 0.05))

@@ -409,11 +409,15 @@ const componentItems = [
   {
     name: 'ConsultEntryCard',
     importName: 'ConsultEntryCard',
-    description: '进入主工作流的高亮入口卡片。',
-    api: ['title', 'description', 'hasQueue'],
+    description: '进入主工作流的高亮入口卡片，包含蓝色默认态和黄色待接诊态。',
+    api: ['title', 'description', 'variant', 'hasQueue'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 360, height: 240, thumbnailScale: 0.75 },
-    preview: () => h(ConsultEntryCard, { hasQueue: true })
+    previewSize: { width: 760, height: 240, thumbnailScale: 0.38 },
+    preview: () =>
+      h('div', { class: 'consult-entry-preview-pair' }, [
+        h(ConsultEntryCard, { variant: 'blue' }),
+        h(ConsultEntryCard, { variant: 'yellow' })
+      ])
   },
   {
     name: 'ServiceStatusCard',
