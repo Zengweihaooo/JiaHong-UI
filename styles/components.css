@@ -161,6 +161,35 @@
   color: var(--jh-btn-neutral-text);
 }
 
+.room-back-btn {
+  width: 112px;
+  min-width: 112px;
+  border-color: transparent;
+  background-color: var(--jh-btn-neutral-bg);
+  background-image: none;
+  color: var(--jh-btn-neutral-text);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.room-back-btn:hover {
+  background-color: var(--jh-btn-neutral-hover-bg);
+  color: var(--jh-btn-neutral-text);
+}
+
+.room-back-btn:active {
+  background-color: var(--jh-btn-neutral-active-bg);
+  color: var(--jh-btn-neutral-text);
+}
+
+.room-back-btn[aria-disabled="true"] {
+  background-color: var(--jh-btn-neutral-disabled-bg);
+  color: var(--jh-btn-neutral-disabled-text);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .jh-btn--text {
   min-width: 0;
   border: 0;
@@ -174,7 +203,8 @@
 }
 
 .jh-btn--icon > img,
-.jh-btn--icon > svg {
+.jh-btn--icon > svg,
+.room-back-btn img {
   flex: 0 0 16px;
   width: 16px;
   height: 16px;
@@ -681,6 +711,7 @@
 .jh-input-field:focus-visible,
 .jh-search-field:focus-within,
 .message-item:focus-visible,
+.room-back-btn:focus-visible,
 .user-menu-service:focus-visible,
 .user-menu-trigger:focus-visible,
 .user-menu__item:focus-visible,
