@@ -3306,6 +3306,69 @@
   min-width: 88px;
 }
 
+.jh-duration-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--jh-duration-chip-height);
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.jh-duration-chip--icon {
+  gap: 10px;
+  padding: 0 16px 0 8px;
+  border-radius: var(--jh-duration-chip-radius);
+  background: transparent;
+}
+
+.jh-duration-chip--pill {
+  padding: 0 16px;
+  border-radius: var(--jh-duration-chip-radius);
+  background: transparent;
+}
+
+.jh-duration-chip--plain {
+  padding: 0 10px;
+  background: transparent;
+}
+
+.jh-duration-chip strong {
+  display: inline-flex;
+  font-weight: 400;
+}
+
+.jh-duration-chip__clock {
+  display: block;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.jh-duration-chip--warning {
+  color: #e37318;
+}
+
+.jh-duration-chip--warning .jh-duration-chip__clock {
+  color: #eea870;
+}
+
+.jh-duration-chip--danger {
+  color: #cb2c2c;
+}
+
+.jh-duration-chip--danger .jh-duration-chip__clock {
+  color: #e36d6d;
+}
+
+.video-shell .consult-workspace {
+  grid-template-columns: minmax(424px, 3fr) minmax(0, 5fr);
+}
+
 .prescription-actions {
   display: flex;
   align-items: center;
@@ -3923,6 +3986,17 @@
   border-bottom: 5px solid transparent;
   border-left: 8px solid #e12727;
   content: "";
+}
+
+@media (max-width: 1180px) {
+  .consult-shell .jh-duration-chip__prefix {
+    display: none;
+  }
+
+  .consult-shell .jh-duration-chip--icon {
+    gap: 6px;
+    padding: 0 10px 0 8px;
+  }
 }
 
 @media (max-width: 720px) {
