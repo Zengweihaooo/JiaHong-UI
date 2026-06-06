@@ -582,8 +582,10 @@ body {
 .component-card__preview--sidebar .sidebar,
 .component-preview-dialog__canvas.component-card__preview--sidebar .sidebar {
   position: relative;
-  width: 199px;
-  min-width: 199px;
+  --sidebar-width: var(--preview-width);
+  --sidebar-collapsed-width: 72px;
+  width: var(--preview-width);
+  min-width: var(--preview-width);
   height: var(--preview-height);
   max-height: var(--preview-height);
 }

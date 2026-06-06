@@ -264,7 +264,7 @@ const navItems = [
   { id: 'components', name: 'Components', count: '19' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
-  { id: 'assets', name: 'Assets', count: '44' }
+  { id: 'assets', name: 'Assets', count: '25' }
 ]
 
 const tokenGroups = [
@@ -345,10 +345,25 @@ const workspaceMenuGroups = [
     ]
   },
   {
+    title: '问诊管理',
+    items: [
+      { label: '三方问诊', icon: 'circle' },
+      { label: '问诊记录', icon: 'clipboard' },
+      { label: '驳回处方', icon: 'checkSquare' }
+    ]
+  },
+  {
     title: '运营相关',
     items: [
       { label: '出诊管理', icon: 'briefcase' },
       { label: '值班打卡', icon: 'calendar' }
+    ]
+  },
+  {
+    title: '账户',
+    items: [
+      { label: '个人中心', icon: 'user' },
+      { label: '医生佣金', icon: 'shield' }
     ]
   }
 ]
@@ -376,7 +391,7 @@ const componentItems = [
     description: '桌面工作台外壳，承载顶部栏、侧栏和页面内容。',
     api: ['collapsed', 'expanded', 'slots'],
     previewClass: 'component-card__preview--shell',
-    previewSize: { width: 960, height: 560, thumbnailScale: 0.24 },
+    previewSize: { width: 960, height: 680, thumbnailScale: 0.24 },
     preview: () =>
       h(
         WorkspaceShell,
@@ -394,7 +409,7 @@ const componentItems = [
     description: '左侧菜单、标签文本和汉堡收起/展开按钮。',
     api: ['menuGroups', 'collapsed', 'toggle'],
     previewClass: 'component-card__preview--sidebar',
-    previewSize: { width: 160, height: 560, thumbnailScale: 0.36 },
+    previewSize: { width: 160, height: 680, thumbnailScale: 0.3 },
     preview: () => h(WorkspaceSidebar, { menuGroups: workspaceMenuGroups, collapsed: false })
   },
   {
@@ -579,11 +594,30 @@ const componentItems = [
 
 const assets = [
   { name: 'Logo', path: 'assets/figma-home/logo.png' },
+  { name: 'Sidebar Menu', path: 'assets/figma-home/menu-icon.svg' },
+  { name: 'Home', path: 'assets/figma-home/home.svg' },
+  { name: 'Dashboard', path: 'assets/figma-home/trello.svg' },
+  { name: 'Third-party Consult', path: 'assets/figma-home/disc.svg' },
+  { name: 'Consult Records', path: 'assets/figma-home/clipboard.svg' },
+  { name: 'Rejected Prescription', path: 'assets/figma-home/check-square.svg' },
+  { name: 'Visit Management', path: 'assets/figma-home/briefcase.svg' },
+  { name: 'Shift Calendar', path: 'assets/figma-home/calendar.svg' },
+  { name: 'Profile', path: 'assets/figma-home/user.svg' },
+  { name: 'Doctor Commission', path: 'assets/figma-home/pocket.svg' },
+  { name: 'Consult Entry', path: 'assets/figma-home/consult-icon.svg' },
+  { name: 'Quick Calendar Box', path: 'assets/figma-home/quick-schedule-box.svg' },
+  { name: 'Quick Calendar Mark', path: 'assets/figma-home/quick-schedule-mark.svg' },
+  { name: 'Quick Document', path: 'assets/figma-home/quick-doc.svg' },
+  { name: 'Quick Plus', path: 'assets/figma-home/quick-plus.svg' },
+  { name: 'Quick Clock Circle', path: 'assets/figma-home/quick-clock-circle.svg' },
+  { name: 'Quick Clock Hand', path: 'assets/figma-home/quick-clock-hand.svg' },
+  { name: 'Checkmark', path: 'assets/figma-home/checkmark.svg' },
   { name: 'Search', path: 'assets/search-icon.png' },
   { name: 'Empty', path: 'assets/room-empty.svg' },
   { name: 'Video', path: 'assets/figma-room/video-consult.svg' },
   { name: 'Text', path: 'assets/figma-room/text-consult.svg' },
-  { name: 'Consult', path: 'assets/figma-room/consult.svg' }
+  { name: 'Consult', path: 'assets/figma-room/consult.svg' },
+  { name: 'Attachment', path: 'assets/figma-consult/attachment.svg' }
 ]
 
 const migrationItems = [

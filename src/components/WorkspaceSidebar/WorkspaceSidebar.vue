@@ -106,7 +106,7 @@ function menuIcon(name) {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  width: var(--sidebar-width);
+  width: var(--sidebar-width, 160px);
   height: 100vh;
   overflow: hidden;
   overscroll-behavior: contain;
@@ -244,7 +244,7 @@ function menuIcon(name) {
 }
 
 .app-shell.is-sidebar-collapsed .sidebar__brand {
-  width: var(--sidebar-collapsed-width);
+  width: var(--sidebar-collapsed-width, 72px);
   padding: 18px 14px;
 }
 
@@ -309,7 +309,7 @@ function menuIcon(name) {
 
 .app-shell.is-sidebar-collapsed .sidebar__footer {
   justify-content: center;
-  width: var(--sidebar-collapsed-width);
+  width: var(--sidebar-collapsed-width, 72px);
 }
 
 .app-shell.is-sidebar-expanded .sidebar__footer {
