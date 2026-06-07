@@ -7,6 +7,7 @@ export {
   ConsultInfoCard,
   ConsultEntryCard,
   DurationChip,
+  DoctorAvatar,
   EmptyState,
   FollowUpVoucher,
   MedicineRiskTip,

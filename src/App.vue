@@ -237,6 +237,7 @@ import {
   Card,
   ConsultEntryCard,
   ConsultInfoCard,
+  DoctorAvatar,
   DurationChip,
   EmptyState,
   FollowUpVoucher,
@@ -266,7 +267,7 @@ const defaultPreviewSize = {
 
 const navItems = [
   { id: 'foundations', name: 'Foundations', count: '58' },
-  { id: 'components', name: 'Components', count: '19' },
+  { id: 'components', name: 'Components', count: '20' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '27' }
@@ -513,6 +514,18 @@ const componentItems = [
     description: '展示持续时长，内置 warning/danger tone。',
     api: ['seconds', 'variant', 'label'],
     preview: () => h('div', { class: 'preview-stack' }, [h(DurationChip, { seconds: 120 }), h(DurationChip, { seconds: 620, label: '问诊持续时长：' })])
+  },
+  {
+    name: 'DoctorAvatar',
+    importName: 'DoctorAvatar',
+    description: '医生端顶部栏头像，内置 H5 home / room 头像资产。',
+    api: ['name', 'context', 'size', 'src'],
+    preview: () =>
+      h('div', { class: 'preview-row' }, [
+        h(DoctorAvatar, { name: '张医生', context: 'home' }),
+        h(DoctorAvatar, { name: '张医生', context: 'room' }),
+        h(DoctorAvatar, { name: '陈医生', context: 'home', size: 'md' })
+      ])
   },
   {
     name: 'TypeIcon',
