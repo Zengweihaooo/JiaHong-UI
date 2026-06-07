@@ -94,11 +94,15 @@
             <div class="component-preview-shell">
               <div class="component-card__preview" :class="item.previewClass" :style="previewFrameStyle(item)">
                 <div class="component-card__preview-scale">
-                  <component :is="item.preview" />
+                  <div class="component-card__canvas-frame">
+                    <div class="component-card__preview-content">
+                      <component :is="item.preview" />
+                    </div>
+                  </div>
                 </div>
               </div>
               <button class="component-preview-trigger" type="button" :aria-label="`按原比例查看 ${item.name}`" @click="openComponentPreview(item)">
-                <span>1:1</span>
+                <span>1440</span>
               </button>
             </div>
             <footer>
@@ -220,7 +224,11 @@
           </header>
           <div class="component-preview-dialog__viewport">
             <div class="component-preview-dialog__canvas" :class="activePreview.previewClass" :style="previewDialogStyle(activePreview)">
-              <component :is="activePreview.preview" :key="`full-${activePreview.name}`" />
+              <div class="component-card__canvas-frame">
+                <div class="component-card__preview-content">
+                  <component :is="activePreview.preview" :key="`full-${activePreview.name}`" />
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -260,6 +268,12 @@ import {
 const query = ref('')
 const copiedToken = ref('')
 const activePreview = ref(null)
+
+const previewCanvasSize = {
+  width: 1440,
+  height: 900,
+  thumbnailScale: 0.22
+}
 
 const defaultPreviewSize = {
   width: 320,
@@ -728,30 +742,41 @@ function messageItem(type, title, preview, badge) {
   ])
 }
 
+function componentCanvasSize() {
+  return previewCanvasSize
+}
+
 function componentPreviewSize(item) {
   return item.previewSize || defaultPreviewSize
 }
 
 function previewFrameStyle(item) {
+  const canvas = componentCanvasSize(item)
   const size = componentPreviewSize(item)
   return {
+    '--canvas-width': `${canvas.width}px`,
+    '--canvas-height': `${canvas.height}px`,
     '--preview-width': `${size.width}px`,
     '--preview-height': `${size.height}px`,
-    '--preview-scale': size.thumbnailScale
+    '--preview-scale': canvas.thumbnailScale
   }
 }
 
 function previewDialogStyle(item) {
+  const canvas = componentCanvasSize(item)
   const size = componentPreviewSize(item)
   return {
+    '--canvas-width': `${canvas.width}px`,
+    '--canvas-height': `${canvas.height}px`,
     '--preview-width': `${size.width}px`,
     '--preview-height': `${size.height}px`
   }
 }
 
 function previewSizeLabel(item) {
+  const canvas = componentCanvasSize(item)
   const size = componentPreviewSize(item)
-  return `${size.width} × ${size.height}`
+  return `${canvas.width} × ${canvas.height} 画布 / 组件 ${size.width} × ${size.height}`
 }
 
 function openComponentPreview(item) {
