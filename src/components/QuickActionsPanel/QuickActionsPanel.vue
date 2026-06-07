@@ -489,7 +489,7 @@ function ScheduleBlock({ block, punched }) {
   align-items: stretch;
   justify-content: center;
   gap: 16px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
   grid-auto-rows: auto;
   width: 100%;
   min-width: 0;
@@ -759,8 +759,8 @@ img.quick-icon {
   font-weight: 700;
   line-height: 22px;
   text-align: center;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
   overflow: visible;
 }
 
@@ -774,8 +774,8 @@ img.quick-icon {
   font-size: 12px;
   line-height: 20px;
   text-align: center;
-  word-break: break-word;
-  overflow-wrap: anywhere;
+  word-break: keep-all;
+  overflow-wrap: normal;
   overflow: visible;
 }
 
