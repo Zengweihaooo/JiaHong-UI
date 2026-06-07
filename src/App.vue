@@ -241,6 +241,7 @@ import {
   DurationChip,
   EmptyState,
   FollowUpVoucher,
+  LatestAnnouncementCard,
   MedicineRiskTip,
   QuickActionsPanel,
   ReadTag,
@@ -268,7 +269,7 @@ const defaultPreviewSize = {
 
 const navItems = [
   { id: 'foundations', name: 'Foundations', count: '58' },
-  { id: 'components', name: 'Components', count: '21' },
+  { id: 'components', name: 'Components', count: '22' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '27' }
@@ -384,6 +385,14 @@ const workspaceServices = [
   { key: 'video', label: '视频问诊', enabled: true },
   { key: 'consult', label: '图文咨询', enabled: true }
 ]
+const latestAnnouncement = {
+  id: 'notice_1',
+  title: '规范开方合规导向',
+  content: '自2024年7月起，根据国家新政策，对于重复开药必须严格审查患者的用药历史。请各位医生在开立处方前，认真查看患者既往处方记录。',
+  date: '2026-06-07',
+  publisher: '运营中心',
+  unread: true
+}
 const workspaceQuickActions = [
   { title: '排班管理', desc: '查看值班安排', icon: 'quickCalendar', feature: 'schedule' },
   { title: '历史问诊', desc: '历史病历查询', icon: 'clock', feature: 'history' },
@@ -467,6 +476,15 @@ const componentItems = [
     previewClass: 'component-card__preview--quick-actions',
     previewSize: { width: 375, height: 476, thumbnailScale: 0.43 },
     preview: () => h(QuickActionsPanel, { actions: workspaceQuickActions })
+  },
+  {
+    name: 'LatestAnnouncementCard',
+    importName: 'LatestAnnouncementCard',
+    description: '桌面工作台最新公告卡片，包含未读红点、摘要和历史公告入口。',
+    api: ['announcement', 'detail', 'history'],
+    previewClass: 'component-card__preview--workbench',
+    previewSize: { width: 380, height: 474, thumbnailScale: 0.43 },
+    preview: () => h(LatestAnnouncementCard, { announcement: latestAnnouncement })
   },
   {
     name: 'RoomPendingWorkspace',
@@ -653,7 +671,7 @@ const migrationItems = [
     title: '基础组件',
     state: '已上移',
     tone: 'success',
-    description: '21 个 Vue 组件已从统一入口导出，覆盖基础控件、首页工作台、视频问诊和处方风险提示。',
+    description: '22 个 Vue 组件已从统一入口导出，覆盖基础控件、首页工作台、视频问诊和处方风险提示。',
     path: 'import { StatusBadge } from "@jiahong/ui"'
   },
   {

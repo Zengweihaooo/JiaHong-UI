@@ -10,6 +10,7 @@ export {
   DoctorAvatar,
   EmptyState,
   FollowUpVoucher,
+  LatestAnnouncementCard,
   MedicineRiskTip,
   QuickActionsPanel,
   ReadTag,
