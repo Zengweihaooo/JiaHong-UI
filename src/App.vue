@@ -407,7 +407,7 @@ const componentItems = [
     description: '桌面工作台外壳，承载顶部栏、侧栏和页面内容。',
     api: ['collapsed', 'expanded', 'slots'],
     previewClass: 'component-card__preview--shell',
-    previewSize: { width: 960, height: 680, thumbnailScale: 0.24 },
+    previewSize: { width: 1440, height: 900, thumbnailScale: 0.15 },
     preview: () =>
       h(
         WorkspaceShell,
@@ -425,7 +425,7 @@ const componentItems = [
     description: '左侧菜单、标签文本和汉堡收起/展开按钮。',
     api: ['menuGroups', 'collapsed', 'toggle'],
     previewClass: 'component-card__preview--sidebar',
-    previewSize: { width: 160, height: 680, thumbnailScale: 0.3 },
+    previewSize: { width: 160, height: 900, thumbnailScale: 0.24 },
     preview: () => h(WorkspaceSidebar, { menuGroups: workspaceMenuGroups, collapsed: false })
   },
   {
@@ -434,7 +434,7 @@ const componentItems = [
     description: '桌面工作台候诊状态卡片。',
     api: ['total', 'items', 'title', 'hint'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 380, height: 260, thumbnailScale: 0.72 },
+    previewSize: { width: 400, height: 240, thumbnailScale: 0.72 },
     preview: () => h(WaitingStatusCard, { total: 6, items: workspaceQueueItems })
   },
   {
@@ -443,7 +443,7 @@ const componentItems = [
     description: '进入主工作流的高亮入口卡片，包含蓝色默认态和黄色待接诊态。',
     api: ['title', 'description', 'variant', 'hasQueue'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 760, height: 240, thumbnailScale: 0.38 },
+    previewSize: { width: 824, height: 240, thumbnailScale: 0.36 },
     preview: () =>
       h('div', { class: 'consult-entry-preview-pair' }, [
         h(ConsultEntryCard, { variant: 'blue' }),
@@ -456,7 +456,7 @@ const componentItems = [
     description: '桌面工作台服务状态和开关集合。',
     api: ['status', 'services', 'toggle'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 440, height: 252, thumbnailScale: 0.62 },
+    previewSize: { width: 400, height: 240, thumbnailScale: 0.72 },
     preview: () => h(ServiceStatusCard, { status: 'online', services: workspaceServices })
   },
   {
@@ -465,8 +465,8 @@ const componentItems = [
     description: '服务状态和开关集合的共享面板，供工作台卡片和用户菜单复用。',
     api: ['status', 'services', 'density', 'toggle'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 386, height: 220, thumbnailScale: 0.68 },
-    preview: () => h(ServiceStatusPanel, { status: 'online', services: workspaceServices, density: 'compact' })
+    previewSize: { width: 336, height: 156, thumbnailScale: 0.86 },
+    preview: () => h(ServiceStatusPanel, { status: 'online', services: workspaceServices, density: 'regular' })
   },
   {
     name: 'QuickActionsPanel',
@@ -474,7 +474,7 @@ const componentItems = [
     description: '高频操作入口，内置编辑态、注意点和排班展开面板。',
     api: ['actions', 'select', 'add', 'remove'],
     previewClass: 'component-card__preview--quick-actions',
-    previewSize: { width: 760, height: 476, thumbnailScale: 0.43 },
+    previewSize: { width: 816, height: 476, thumbnailScale: 0.36 },
     preview: () => h(QuickActionsPanel, { actions: workspaceQuickActions })
   },
   {
@@ -483,7 +483,7 @@ const componentItems = [
     description: '桌面工作台最新公告卡片，包含未读红点、摘要和历史公告入口。',
     api: ['announcement', 'detail', 'history'],
     previewClass: 'component-card__preview--workbench',
-    previewSize: { width: 380, height: 474, thumbnailScale: 0.43 },
+    previewSize: { width: 400, height: 476, thumbnailScale: 0.43 },
     preview: () => h(LatestAnnouncementCard, { announcement: latestAnnouncement })
   },
   {
@@ -492,7 +492,7 @@ const componentItems = [
     description: '待接诊问诊室骨架，复用右侧患者、诊断和药品占位样式。',
     api: ['patientFields', 'medicineHeaders', 'refresh'],
     previewClass: 'component-card__preview--pending-room',
-    previewSize: { width: 1040, height: 640, thumbnailScale: 0.22 },
+    previewSize: { width: 1152, height: 796, thumbnailScale: 0.18 },
     preview: () => h(RoomPendingWorkspace, { skeletonCount: 3 })
   },
   {
@@ -501,7 +501,7 @@ const componentItems = [
     description: 'H5 视频问诊画面和摄像头、麦克风控制。',
     api: ['cameraOn', 'micOn', 'patientImage', 'toggle'],
     previewClass: 'component-card__preview--video',
-    previewSize: { width: 560, height: 240, thumbnailScale: 0.48 },
+    previewSize: { width: 408, height: 153, thumbnailScale: 0.72 },
     preview: () => h(VideoCallWindow, { cameraOn: false, micOn: true, cameraStatusText: '摄像头已关闭' })
   },
   {
@@ -600,7 +600,7 @@ const componentItems = [
     description: '通用凭证展示，不接收业务 record。',
     api: ['variant', 'images', 'voices', 'title'],
     previewClass: 'component-card__preview--voucher',
-    previewSize: { width: 380, height: 240, thumbnailScale: 0.68 },
+    previewSize: { width: 672, height: 172, thumbnailScale: 0.43 },
     preview: () => h(FollowUpVoucher, { title: '复诊凭证', variant: 'mixed', images: voucherImages, voices: voucherVoices })
   },
   {
@@ -609,7 +609,7 @@ const componentItems = [
     description: '问诊病情描述、图片和语音附件展示。',
     api: ['description', 'images', 'voices', 'preview-image'],
     previewClass: 'component-card__preview--consult-info',
-    previewSize: { width: 380, height: 240, thumbnailScale: 0.68 },
+    previewSize: { width: 408, height: 227, thumbnailScale: 0.72 },
     preview: () =>
       h(ConsultInfoCard, {
         title: '咨询信息',
@@ -624,7 +624,7 @@ const componentItems = [
     description: '处方药品行下方的 H5 风险提示卡。',
     api: ['level', 'categories', 'message', 'suggestion'],
     previewClass: 'component-card__preview--risk-tip',
-    previewSize: { width: 440, height: 180, thumbnailScale: 0.62 },
+    previewSize: { width: 672, height: 132, thumbnailScale: 0.43 },
     preview: () =>
       h(MedicineRiskTip, {
         title: '药品风险提示 · 盐酸氨溴索片',
