@@ -269,7 +269,7 @@ const navItems = [
   { id: 'components', name: 'Components', count: '19' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
-  { id: 'assets', name: 'Assets', count: '25' }
+  { id: 'assets', name: 'Assets', count: '27' }
 ]
 
 const tokenGroups = [
@@ -599,6 +599,8 @@ const componentItems = [
 
 const assets = [
   { name: 'Logo', path: 'assets/figma-home/logo.png', width: '72px', height: '34px' },
+  { name: 'Home Avatar', path: 'assets/figma-home/avatar-source.png' },
+  { name: 'Room Avatar', path: 'assets/figma-consult/avatar-source.png' },
   { name: 'Sidebar Menu', path: 'assets/figma-home/menu-icon.svg' },
   { name: 'Home', path: 'assets/figma-home/home.svg' },
   { name: 'Dashboard', path: 'assets/figma-home/trello.svg' },

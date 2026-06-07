@@ -1,12 +1,12 @@
 <template>
   <span class="jh-avatar" :class="[`jh-avatar--${safeSize}`]" :aria-label="alt || name || '用户头像'">
-    <img v-if="src" :src="src" :alt="alt || name" />
+    <img v-if="src && !imageFailed" :src="src" :alt="alt" @error="handleImageError" />
     <span v-else>{{ initials }}</span>
   </span>
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 defineOptions({
   name: 'JhAvatar'
@@ -33,6 +33,18 @@ const props = defineProps({
 
 const safeSize = computed(() => (['sm', 'md', 'lg'].includes(props.size) ? props.size : 'md'))
 const initials = computed(() => String(props.name || '?').trim().slice(0, 2))
+const imageFailed = ref(false)
+
+watch(
+  () => props.src,
+  () => {
+    imageFailed.value = false
+  }
+)
+
+function handleImageError() {
+  imageFailed.value = true
+}
 </script>
 
 <style>
