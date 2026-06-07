@@ -528,7 +528,7 @@ const componentItems = [
   {
     name: 'DoctorAvatar',
     importName: 'DoctorAvatar',
-    description: '医生端顶部栏头像，内置 H5 home / room 头像资产。',
+    description: '医生端顶部栏头像，默认使用姓名兜底，可按需传入图片 src。',
     api: ['name', 'context', 'size', 'src'],
     preview: () =>
       h('div', { class: 'preview-row' }, [
@@ -622,8 +622,6 @@ const componentItems = [
 
 const assets = [
   { name: 'Logo', path: 'assets/figma-home/logo.png', width: '72px', height: '34px' },
-  { name: 'Home Avatar', path: 'assets/figma-home/avatar-source.png' },
-  { name: 'Room Avatar', path: 'assets/figma-consult/avatar-source.png' },
   { name: 'Sidebar Menu', path: 'assets/figma-home/menu-icon.svg' },
   { name: 'Home', path: 'assets/figma-home/home.svg' },
   { name: 'Dashboard', path: 'assets/figma-home/trello.svg' },
