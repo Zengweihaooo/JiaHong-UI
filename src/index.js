@@ -15,6 +15,7 @@ export {
   ReadTag,
   RoomPendingWorkspace,
   ServiceStatusCard,
+  ServiceStatusPanel,
   StatusBadge,
   TypeIcon,
   VideoCallWindow,

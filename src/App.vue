@@ -246,6 +246,7 @@ import {
   ReadTag,
   RoomPendingWorkspace,
   ServiceStatusCard,
+  ServiceStatusPanel,
   StatusBadge,
   TypeIcon,
   VideoCallWindow,
@@ -267,7 +268,7 @@ const defaultPreviewSize = {
 
 const navItems = [
   { id: 'foundations', name: 'Foundations', count: '58' },
-  { id: 'components', name: 'Components', count: '20' },
+  { id: 'components', name: 'Components', count: '21' },
   { id: 'styles', name: 'CSS Primitives', count: '18' },
   { id: 'migration', name: 'Migration', count: 'Map' },
   { id: 'assets', name: 'Assets', count: '27' }
@@ -448,6 +449,15 @@ const componentItems = [
     previewClass: 'component-card__preview--workbench',
     previewSize: { width: 440, height: 252, thumbnailScale: 0.62 },
     preview: () => h(ServiceStatusCard, { status: 'online', services: workspaceServices })
+  },
+  {
+    name: 'ServiceStatusPanel',
+    importName: 'ServiceStatusPanel',
+    description: '服务状态和开关集合的共享面板，供工作台卡片和用户菜单复用。',
+    api: ['status', 'services', 'density', 'toggle'],
+    previewClass: 'component-card__preview--workbench',
+    previewSize: { width: 386, height: 220, thumbnailScale: 0.68 },
+    preview: () => h(ServiceStatusPanel, { status: 'online', services: workspaceServices, density: 'compact' })
   },
   {
     name: 'QuickActionsPanel',
@@ -645,7 +655,7 @@ const migrationItems = [
     title: '基础组件',
     state: '已上移',
     tone: 'success',
-    description: '19 个 Vue 组件已从统一入口导出，覆盖基础控件、首页工作台、视频问诊和处方风险提示。',
+    description: '21 个 Vue 组件已从统一入口导出，覆盖基础控件、首页工作台、视频问诊和处方风险提示。',
     path: 'import { StatusBadge } from "@jiahong/ui"'
   },
   {

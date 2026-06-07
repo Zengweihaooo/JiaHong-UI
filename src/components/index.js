@@ -12,6 +12,7 @@ export { default as QuickActionsPanel } from './QuickActionsPanel/QuickActionsPa
 export { default as ReadTag } from './ReadTag/ReadTag.vue'
 export { default as RoomPendingWorkspace } from './RoomPendingWorkspace/RoomPendingWorkspace.vue'
 export { default as ServiceStatusCard } from './ServiceStatusCard/ServiceStatusCard.vue'
+export { default as ServiceStatusPanel } from './ServiceStatusPanel/ServiceStatusPanel.vue'
 export { default as StatusBadge } from './StatusBadge/StatusBadge.vue'
 export { default as TypeIcon } from './TypeIcon/TypeIcon.vue'
 export { default as VideoCallWindow } from './VideoCallWindow/VideoCallWindow.vue'
