@@ -2627,6 +2627,11 @@ img.quick-icon {
   mask-image: url("@jiahong/ui/assets/figma-home/briefcase.svg");
 }
 
+.quick-icon--menu-calendar {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/calendar.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/calendar.svg");
+}
+
 .quick-entry-option__title {
   display: block;
   width: 100%;
@@ -3282,6 +3287,97 @@ img.quick-icon {
 
 .followup-voucher-item--viewed:not(.is-playing) .followup-voice-wave__active {
   opacity: 1;
+}
+
+.jh-voucher-wave {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+}
+
+.jh-voucher-wave span {
+  display: block;
+  width: 2px;
+  height: var(--wave-height, 10px);
+  border-radius: var(--jh-radius-pill);
+  background: #b8c6d7;
+}
+
+.jh-voucher-voice-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.jh-voucher-voice-overlay.is-open {
+  display: flex;
+}
+
+.jh-voucher-voice-dialog {
+  width: min(360px, calc(100vw - 32px));
+  padding: var(--jh-space-4);
+  border-radius: var(--jh-radius-lg);
+  background: var(--jh-color-bg-surface);
+  box-shadow: var(--jh-shadow-lg);
+}
+
+.jh-voucher-voice-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--jh-space-3);
+}
+
+.jh-voucher-voice-dialog__header h2 {
+  margin: 0;
+  font-size: var(--jh-font-size-lg);
+  font-weight: 500;
+}
+
+.jh-voucher-voice-dialog__close,
+.jh-voucher-voice-dialog__play {
+  border: 0;
+  cursor: pointer;
+}
+
+.jh-voucher-voice-dialog__close {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--jh-radius-md);
+  background:
+    linear-gradient(45deg, transparent 45%, var(--jh-color-text-secondary) 45%, var(--jh-color-text-secondary) 55%, transparent 55%),
+    linear-gradient(-45deg, transparent 45%, var(--jh-color-text-secondary) 45%, var(--jh-color-text-secondary) 55%, transparent 55%);
+}
+
+.jh-voucher-voice-dialog__body {
+  display: flex;
+  align-items: center;
+  gap: var(--jh-space-3);
+  margin-top: var(--jh-space-4);
+}
+
+.jh-voucher-voice-dialog__play {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--jh-radius-pill);
+  background: var(--jh-color-info-bg);
+  color: var(--jh-color-primary);
+}
+
+.jh-voucher-voice-dialog__play::before {
+  display: block;
+  width: 0;
+  height: 0;
+  margin: auto;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid currentColor;
+  content: "";
 }
 
 .consult-attachment-overlay {

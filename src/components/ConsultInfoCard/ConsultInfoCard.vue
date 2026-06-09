@@ -60,10 +60,11 @@
 
   <Teleport to="body">
     <div
+      v-if="activeVoice"
       :class="['jh-voucher-voice-overlay', { 'is-open': Boolean(activeVoice) }]"
       role="dialog"
       aria-modal="true"
-      :aria-hidden="!activeVoice"
+      aria-hidden="false"
       @click.self="closeVoice"
     >
       <div class="jh-voucher-voice-dialog">

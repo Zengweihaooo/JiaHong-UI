@@ -58,6 +58,7 @@
               <img class="quick-icon__base" :src="assetUrl('assets/figma-home/quick-clock-circle.svg')" alt="" />
               <img class="quick-icon__hand" :src="assetUrl('assets/figma-home/quick-clock-hand.svg')" alt="" />
             </span>
+            <span v-else-if="isMenuIcon(action.icon)" :class="['quick-icon quick-icon--menu', `quick-icon--menu-${action.icon}`]" aria-hidden="true"></span>
             <img v-else class="quick-icon" :class="`quick-icon--${action.icon || 'document'}`" :src="quickIcon(action.icon)" alt="" aria-hidden="true" />
           </span>
           <span v-if="action.title" class="quick-card__title">{{ action.title }}</span>
@@ -253,9 +254,14 @@ const defaultIconMap = {
   briefcase: 'assets/figma-home/briefcase.svg',
   calendar: 'assets/figma-home/calendar.svg'
 }
+const menuIconKeys = new Set(['user', 'shield', 'clipboard', 'briefcase', 'calendar'])
 
 function quickIcon(name) {
   return assetUrl(props.iconMap[name] || defaultIconMap[name] || defaultIconMap.document)
+}
+
+function isMenuIcon(name) {
+  return menuIconKeys.has(name)
 }
 
 function featureOf(action) {
@@ -747,6 +753,43 @@ img.quick-icon {
 .quick-icon--plus {
   width: 21px;
   height: 21px;
+}
+
+.quick-icon--menu {
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(270deg, #3b92ff 0%, #006ef9 100%);
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.quick-icon--menu-user {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/user.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/user.svg");
+}
+
+.quick-icon--menu-shield {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/pocket.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/pocket.svg");
+}
+
+.quick-icon--menu-clipboard {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/clipboard.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/clipboard.svg");
+}
+
+.quick-icon--menu-briefcase {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/briefcase.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/briefcase.svg");
+}
+
+.quick-icon--menu-calendar {
+  -webkit-mask-image: url("@jiahong/ui/assets/figma-home/calendar.svg");
+  mask-image: url("@jiahong/ui/assets/figma-home/calendar.svg");
 }
 
 .quick-card__title {
