@@ -58,30 +58,6 @@
     </div>
   </section>
 
-  <Teleport to="body">
-    <div
-      v-if="activeVoice"
-      :class="['jh-voucher-voice-overlay', { 'is-open': Boolean(activeVoice) }]"
-      role="dialog"
-      aria-modal="true"
-      aria-hidden="false"
-      @click.self="closeVoice"
-    >
-      <div class="jh-voucher-voice-dialog">
-        <div class="jh-voucher-voice-dialog__header">
-          <h2>{{ activeVoice?.title || voiceTitle }}</h2>
-          <button class="jh-voucher-voice-dialog__close" type="button" :aria-label="`关闭${voiceTitle}`" @click="closeVoice"></button>
-        </div>
-        <div class="jh-voucher-voice-dialog__body">
-          <button class="jh-voucher-voice-dialog__play" type="button" :aria-label="`播放${voiceTitle}`"></button>
-          <span class="jh-voucher-wave" aria-hidden="true">
-            <span v-for="(height, waveIndex) in dialogVoiceWaveHeights" :key="waveIndex" :style="{ '--wave-height': `${height}px` }"></span>
-          </span>
-          <span class="jh-voucher-voice-dialog__duration">{{ activeVoice?.duration || 0 }}”</span>
-        </div>
-      </div>
-    </div>
-  </Teleport>
 </template>
 
 <script setup>
@@ -130,7 +106,6 @@ const activeVoiceRemaining = ref(0)
 const activeVoiceWaveStep = ref(0)
 const viewedImageKeys = ref(new Set())
 const viewedVoiceKeys = ref(new Set())
-const dialogVoiceWaveHeights = [12, 18, 10, 20, 14, 8, 8, 6, 4, 10, 14, 14, 12, 10, 10, 8]
 const followUpVoiceWaveFrameMs = 250
 const followUpVoiceWaveFrameCount = 4
 let activeVoiceTimer = 0
@@ -219,10 +194,6 @@ function openVoice(voice, index) {
     activeVoiceRemaining.value = Math.max(0, activeVoiceRemaining.value - 1)
     if (activeVoiceRemaining.value <= 0) stopFollowUpVoicePlayback()
   }, 1000)
-}
-
-function closeVoice() {
-  stopFollowUpVoicePlayback()
 }
 
 function stopFollowUpVoicePlayback() {
