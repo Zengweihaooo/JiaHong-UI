@@ -6,6 +6,7 @@ export {
   Card,
   ConsultInfoCard,
   ConsultEntryCard,
+  DiseaseOption,
   DurationChip,
   DoctorAvatar,
   EmptyState,
