@@ -240,7 +240,6 @@ import {
   DoctorAvatar,
   DurationChip,
   EmptyState,
-  FollowUpVoucher,
   LatestAnnouncementCard,
   MedicineRiskTip,
   QuickActionsPanel,
@@ -593,15 +592,6 @@ const componentItems = [
     api: ['image', 'title', 'description'],
     previewClass: 'component-card__preview--compact',
     preview: () => h(EmptyState, { image: assetUrl('assets/room-empty.svg'), title: '暂无记录', description: '稍后有新内容时会展示在这里' })
-  },
-  {
-    name: 'FollowUpVoucher',
-    importName: 'FollowUpVoucher',
-    description: '通用凭证展示，不接收业务 record。',
-    api: ['variant', 'images', 'voices', 'title'],
-    previewClass: 'component-card__preview--voucher',
-    previewSize: { width: 672, height: 172, thumbnailScale: 0.43 },
-    preview: () => h(FollowUpVoucher, { title: '复诊凭证', variant: 'mixed', images: voucherImages, voices: voucherVoices })
   },
   {
     name: 'ConsultInfoCard',

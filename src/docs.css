@@ -495,14 +495,6 @@ body {
   padding: 8px;
 }
 
-.component-card__preview--voucher {
-  place-items: stretch;
-}
-
-.component-card__preview--voucher .jh-voucher {
-  margin: 0;
-}
-
 .component-card__preview--shell,
 .component-card__preview--sidebar,
 .component-card__preview--workbench,

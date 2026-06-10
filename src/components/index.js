@@ -6,7 +6,6 @@ export { default as ConsultEntryCard } from './ConsultEntryCard/ConsultEntryCard
 export { default as DurationChip } from './DurationChip/DurationChip.vue'
 export { default as DoctorAvatar } from './DoctorAvatar/DoctorAvatar.vue'
 export { default as EmptyState } from './EmptyState/EmptyState.vue'
-export { default as FollowUpVoucher } from './FollowUpVoucher/FollowUpVoucher.vue'
 export { default as LatestAnnouncementCard } from './LatestAnnouncementCard/LatestAnnouncementCard.vue'
 export { default as MedicineRiskTip } from './MedicineRiskTip/MedicineRiskTip.vue'
 export { default as QuickActionsPanel } from './QuickActionsPanel/QuickActionsPanel.vue'

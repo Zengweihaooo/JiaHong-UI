@@ -9,7 +9,6 @@ export {
   DurationChip,
   DoctorAvatar,
   EmptyState,
-  FollowUpVoucher,
   LatestAnnouncementCard,
   MedicineRiskTip,
   QuickActionsPanel,
