@@ -1,8 +1,10 @@
 <template>
   <section class="room-card room-card--pending-consult" aria-label="待接诊问诊室">
-    <button class="jh-btn jh-btn--md jh-btn--outline-secondary room-refresh" type="button" @click="$emit('refresh')">
-      {{ refreshLabel }}
-    </button>
+    <div class="room-pending-toolbar">
+      <button class="jh-btn jh-btn--md jh-btn--outline-secondary room-refresh" type="button" @click="$emit('refresh')">
+        {{ refreshLabel }}
+      </button>
+    </div>
     <div class="consult-workspace room-pending-workspace">
       <section class="chat-panel room-pending-chat-panel" aria-label="待接诊聊天区域">
         <div class="room-pending-chat-skeleton" aria-hidden="true">
@@ -120,23 +122,22 @@ defineEmits(['refresh'])
   padding: 0;
 }
 
-.room-card--pending-consult .room-refresh {
+.room-pending-toolbar {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 3;
-}
-
-.room-card--pending-consult::before {
-  position: absolute;
-  top: 56px;
+  top: 0;
   right: 0;
   left: 0;
-  z-index: 2;
-  height: 1px;
-  background: #eef0f2;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  padding: 10px 24px;
+  background: #ffffff;
   box-shadow: var(--jh-shadow);
-  content: "";
+}
+
+.room-card--pending-consult .room-refresh {
+  flex: 0 0 auto;
 }
 
 .room-pending-workspace {
