@@ -16,7 +16,9 @@
       <span :class="['medicine-risk-tip__level', `medicine-risk-tip__level--${level}`]" data-medicine-risk-level>
         {{ levelLabel }}
       </span>
-      <span class="medicine-risk-tip__categories" data-medicine-risk-categories>{{ categoriesText }}</span>
+      <span class="medicine-risk-tip__categories" data-medicine-risk-categories>
+        <span v-for="category in visibleCategories" :key="category" class="medicine-risk-tip__category">{{ category }}</span>
+      </span>
     </div>
     <p class="medicine-risk-tip__message" data-medicine-risk-message>{{ message }}</p>
     <p class="medicine-risk-tip__suggestion" data-medicine-risk-suggestion>{{ suggestion }}</p>
@@ -67,5 +69,5 @@ const props = defineProps({
 
 defineEmits(["close"]);
 
-const categoriesText = computed(() => props.categories.filter(Boolean).join("、"));
+const visibleCategories = computed(() => props.categories.filter(Boolean));
 </script>

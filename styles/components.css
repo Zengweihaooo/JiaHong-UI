@@ -3606,9 +3606,10 @@ img.quick-icon {
   height: 56px;
   padding: 0 10px;
   color: var(--jh-table-cell-text);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 20px;
+  white-space: nowrap;
 }
 
 .medicine-table__row > span,
@@ -3617,6 +3618,7 @@ img.quick-icon {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .medicine-table__head {
@@ -3717,13 +3719,13 @@ img.quick-icon {
 
 .medicine-risk-tip__meta {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   min-width: 0;
 }
 
 .medicine-risk-tip__level,
-.medicine-risk-tip__categories {
+.medicine-risk-tip__category {
   display: inline-flex;
   align-items: center;
   min-height: 22px;
@@ -3752,11 +3754,17 @@ img.quick-icon {
 }
 
 .medicine-risk-tip__categories {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: 6px;
   min-width: 0;
-  overflow: hidden;
+}
+
+.medicine-risk-tip__category {
+  flex: 0 0 auto;
   background: #fff0f0;
   color: #8f2d25;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
